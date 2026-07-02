@@ -1,4 +1,4 @@
-"""Model constants — MUST stay in sync with the website's index.html."""
+"""Model constants ??MUST stay in sync with the website's index.html."""
 
 # Source strength = weighted sum of four 0-100 component signals
 SRC_WEIGHTS = {"reach": 0.40, "eng": 0.25, "scale": 0.20, "mom": 0.15}
@@ -16,4 +16,4 @@ SEED_CANDIDATES = "seeds/candidates.csv"
 SEED_VALIDATION = "seeds/validation.json"
 OUT_JSON = "data.json"
 # Path to the website file whose DATA block gets patched (relative to repo root)
-SITE_INDEX = "site/index.html"
+SITE_INDEX = "docs/index.html"
