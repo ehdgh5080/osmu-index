@@ -10,7 +10,6 @@ import sys
 from pathlib import Path
 
 from . import config, score
-from .trends import interest, _client
 from .fit_llm import score_fit
 
 
@@ -26,35 +25,30 @@ def load_candidates(path):
             r["seed_fit"] = [int(x) for x in r["seed_fit"].split("|")] if r.get("seed_fit") else None
             r["band"] = [int(x) for x in r["band"].split("|")] if r.get("band") else [50, 80]
             r["trend_kw"] = (r.get("trend_kw") or "").strip()
+            for k in ("reach", "eng", "scale_sig", "mom"):
+                r[k] = int(r[k]) if r.get(k) else None
             rows.append(r)
     return rows
 
 
 def collect(cands):
     """Attach live Trends signals + LLM fit to each candidate."""
-    py = _client()
     for c in cands:
-        tr = interest(kr=c.get("kr",""), en=c.get("name",""), override=c.get("trend_kw",""), pytrends=py) or {}
-        c["_peak"] = tr.get("peak")
-        c["_recent"] = tr.get("recent")
-        c["_slope"] = tr.get("slope")
         fit = score_fit(c["synopsis"]) if c.get("synopsis") else None
         c["fit"] = fit or c["seed_fit"] or [70, 70, 70]
-        kwhit = tr.get("kw","-"); geohit = tr.get("geo","-")
-        print(f"  {c['name']:<38} peak={c['_peak']} slope={round(c['_slope'],2) if c['_slope'] else None} via=[{kwhit}/{geohit}] fit={c['fit']}")
+        llm = "claude" if fit else "seed"
+        print(f"  {c['name']:<40} src=[R{c['reach']} E{c['eng']} S{c['scale_sig']} M{c['mom']}] fit={c['fit']} ({llm})")
     return cands
 
 
 def build_forward(cands):
-    peaks = [c["_peak"] for c in cands if c["_peak"] is not None]
-    recents = [c["_recent"] for c in cands if c["_recent"] is not None]
     out = []
     for c in cands:
         comp = [
-            score.reach_score(c["_peak"], peaks),
-            score.eng_score(c["rating"], c["_recent"], recents),
-            score.scale_score(c["chapters"]),
-            score.momentum_score(c["_slope"]),
+            c["reach"] if c["reach"] is not None else 65,
+            c["eng"] if c["eng"] is not None else 65,
+            c["scale_sig"] if c["scale_sig"] is not None else score.scale_score(c["chapters"]),
+            c["mom"] if c["mom"] is not None else 60,
         ]
         item = {
             "n": c["name"], "kr": c.get("kr", ""), "kind": "forward",
@@ -97,7 +91,7 @@ def main():
     validation = json.loads(Path(config.SEED_VALIDATION).read_text(encoding="utf-8"))
     print(f"   {len(cands)} candidates, {len(validation)} validation titles")
 
-    print("2) collect live signals (Google Trends + Claude fit)")
+    print("2) score format-fit (Claude) + read source signals (seed)")
     collect(cands)
 
     print("3) score")

@@ -35,11 +35,11 @@ page and append rows (see "Honest limits").
 
 ## Honest limits (read this)
 - **No view-count scraping.** Naver/Kakao have no public API, render dynamically, and
-  scraping raw view counts risks ToS violation and IP blocks. We use Google Trends
-  interest as a *proxy* instead — legal and reproducible, but noisier than true reads.
-- **Trends is a proxy, not truth.** Search interest ≠ readership. Treat Source as a
-  comparative signal, not a measurement.
-- **pytrends is unofficial** and can rate-limit; failures fall back to seed values.
+  scraping raw view counts risks ToS violation and IP blocks.
+- **No live Google Trends.** We tried it; Google returns HTTP 429 to pytrends from
+  essentially all environments. Source signals are curated from public research in the
+  seed CSV instead — stable and reproducible, but hand-maintained rather than live.
+- **Source is a comparative index, not a measurement.** Treat it as relative, not truth.
 - **Adaptation status** ("no screen deal yet") can't be verified reliably by machine.
   Keep it in the seed (`disc` column) and review periodically.
 - **Candidate discovery isn't fully automated.** Growing the seed list from live
