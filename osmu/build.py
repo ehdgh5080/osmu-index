@@ -25,6 +25,7 @@ def load_candidates(path):
             r["disc"] = str(r.get("disc", "")).strip().lower() in ("1", "true", "yes")
             r["seed_fit"] = [int(x) for x in r["seed_fit"].split("|")] if r.get("seed_fit") else None
             r["band"] = [int(x) for x in r["band"].split("|")] if r.get("band") else [50, 80]
+            r["trend_kw"] = (r.get("trend_kw") or "").strip()
             rows.append(r)
     return rows
 
@@ -33,13 +34,14 @@ def collect(cands):
     """Attach live Trends signals + LLM fit to each candidate."""
     py = _client()
     for c in cands:
-        tr = interest(c.get("kr") or c["name"], py) or {}
+        tr = interest(kr=c.get("kr",""), en=c.get("name",""), override=c.get("trend_kw",""), pytrends=py) or {}
         c["_peak"] = tr.get("peak")
         c["_recent"] = tr.get("recent")
         c["_slope"] = tr.get("slope")
         fit = score_fit(c["synopsis"]) if c.get("synopsis") else None
         c["fit"] = fit or c["seed_fit"] or [70, 70, 70]
-        print(f"  {c['name']:<38} trends_peak={c['_peak']} slope={c['_slope']} fit={c['fit']}")
+        kwhit = tr.get("kw","-"); geohit = tr.get("geo","-")
+        print(f"  {c['name']:<38} peak={c['_peak']} slope={round(c['_slope'],2) if c['_slope'] else None} via=[{kwhit}/{geohit}] fit={c['fit']}")
     return cands
 
 
