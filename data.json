@@ -1,0 +1,565 @@
+{
+  "generated": "2026-07-02",
+  "src_t": 61,
+  "opt_t": 75,
+  "titles": [
+    {
+      "n": "Solo Leveling",
+      "kr": "나 혼자만 레벨업",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        61,
+        60
+      ],
+      "fit": [
+        65,
+        72,
+        88
+      ],
+      "band": [
+        80,
+        98
+      ],
+      "foot": "Proven global action IP — multiple options already in play.",
+      "stat": "anime done · live-action announced",
+      "src": 60,
+      "o": 75
+    },
+    {
+      "n": "Nano Machine",
+      "kr": "나노마신",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        65,
+        60
+      ],
+      "fit": [
+        66,
+        66,
+        90
+      ],
+      "band": [
+        58,
+        82
+      ],
+      "foot": "Surging murim-SF hit; clean anime route, no deal yet.",
+      "disc": true,
+      "src": 61,
+      "o": 74
+    },
+    {
+      "n": "Return of the Mount Hua Sect",
+      "kr": "화산귀환",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        58,
+        60
+      ],
+      "fit": [
+        75,
+        68,
+        85
+      ],
+      "band": [
+        60,
+        82
+      ],
+      "foot": "Huge source but momentum past peak — ratings and readers declining.",
+      "stat": "anime in production",
+      "src": 60,
+      "o": 76
+    },
+    {
+      "n": "Lookism",
+      "kr": "외모지상주의",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        79,
+        60
+      ],
+      "fit": [
+        75,
+        65,
+        80
+      ],
+      "band": [
+        50,
+        74
+      ],
+      "foot": "Global Naver hit; dual-body premise needs animation.",
+      "stat": "anime airing",
+      "src": 64,
+      "o": 74
+    },
+    {
+      "n": "The Youngest Son of a Swordsmanship Family",
+      "kr": "검술명가 막내아들",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        57,
+        60
+      ],
+      "fit": [
+        62,
+        70,
+        90
+      ],
+      "band": [
+        62,
+        86
+      ],
+      "foot": "KakaoPage mega-hit; strong single-format anime route.",
+      "disc": true,
+      "src": 59,
+      "o": 74
+    },
+    {
+      "n": "The Remarried Empress",
+      "kr": "재혼황후",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        55,
+        60
+      ],
+      "fit": [
+        92,
+        72,
+        78
+      ],
+      "band": [
+        68,
+        90
+      ],
+      "foot": "Palace fantasy carrying drama, film and anime — rare 3-format breadth.",
+      "stat": "drama in the works",
+      "src": 59,
+      "o": 82
+    },
+    {
+      "n": "Overgeared",
+      "kr": "템빨",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        61,
+        60
+      ],
+      "fit": [
+        55,
+        68,
+        88
+      ],
+      "band": [
+        55,
+        80
+      ],
+      "foot": "Long-running VR-gaming fantasy with a deep world — natural anime candidate.",
+      "disc": true,
+      "src": 60,
+      "o": 70
+    },
+    {
+      "n": "Eleceed",
+      "kr": "일렉시드",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        72,
+        60
+      ],
+      "fit": [
+        62,
+        75,
+        90
+      ],
+      "band": [
+        54,
+        80
+      ],
+      "foot": "Fast superpower action; top anime fit.",
+      "stat": "anime airing",
+      "src": 62,
+      "o": 75
+    },
+    {
+      "n": "Reformation of the Deadbeat Noble",
+      "kr": "광마회귀",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        50,
+        60
+      ],
+      "fit": [
+        68,
+        68,
+        88
+      ],
+      "band": [
+        58,
+        82
+      ],
+      "foot": "Franchise-grade martial-arts source with no screen deal yet.",
+      "disc": true,
+      "src": 58,
+      "o": 75
+    },
+    {
+      "n": "The Greatest Estate Designer",
+      "kr": "역대급 영지 설계사",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        61,
+        60
+      ],
+      "fit": [
+        72,
+        62,
+        82
+      ],
+      "band": [
+        52,
+        76
+      ],
+      "foot": "Rising strategy-fantasy with strong buzz.",
+      "disc": true,
+      "src": 60,
+      "o": 73
+    },
+    {
+      "n": "Trash of the Count's Family",
+      "kr": "백작가의 망나니가 되었다",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        54,
+        60
+      ],
+      "fit": [
+        62,
+        68,
+        86
+      ],
+      "band": [
+        56,
+        80
+      ],
+      "foot": "Redice action-fantasy hit — clean single-format anime candidate.",
+      "disc": true,
+      "src": 59,
+      "o": 72
+    },
+    {
+      "n": "SSS-Class Suicide Hunter",
+      "kr": "SSS급 죽어야 사는 헌터",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        50,
+        60
+      ],
+      "fit": [
+        70,
+        72,
+        85
+      ],
+      "band": [
+        54,
+        78
+      ],
+      "foot": "Dark hunter premise, broad fit — low-cost multi-format experiment.",
+      "disc": true,
+      "src": 58,
+      "o": 76
+    },
+    {
+      "n": "Mercenary Enrollment",
+      "kr": "입학용병",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        61,
+        60
+      ],
+      "fit": [
+        78,
+        72,
+        82
+      ],
+      "band": [
+        55,
+        80
+      ],
+      "foot": "Naver action hit with drama crossover.",
+      "disc": true,
+      "src": 60,
+      "o": 78
+    },
+    {
+      "n": "The Villainess Is a Marionette",
+      "kr": "악녀는 마리오네트",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        50,
+        60
+      ],
+      "fit": [
+        85,
+        60,
+        78
+      ],
+      "band": [
+        48,
+        74
+      ],
+      "foot": "Romance-fantasy villainess — the rare drama-led discovery.",
+      "disc": true,
+      "src": 58,
+      "o": 76
+    },
+    {
+      "n": "The Debut or Die",
+      "kr": "데뷔 못 하면 죽는 병",
+      "kind": "forward",
+      "comp": [
+        60,
+        60,
+        49,
+        60
+      ],
+      "fit": [
+        88,
+        65,
+        60
+      ],
+      "band": [
+        50,
+        74
+      ],
+      "foot": "Idol-survival web-novel — non-anime call; drama / K-pop route.",
+      "disc": true,
+      "src": 58,
+      "o": 72
+    },
+    {
+      "n": "All of Us Are Dead",
+      "kr": "지금 우리 학교는",
+      "src": 70,
+      "g": 100,
+      "nf": true,
+      "fit": [
+        85,
+        75,
+        70
+      ],
+      "kind": "adapted",
+      "o": 77
+    },
+    {
+      "n": "Moving",
+      "kr": "무빙",
+      "src": 72,
+      "g": 35,
+      "d": 85,
+      "fit": [
+        85,
+        78,
+        72
+      ],
+      "kind": "adapted",
+      "o": 79
+    },
+    {
+      "n": "The Uncanny Counter",
+      "kr": "경이로운 소문",
+      "src": 68,
+      "g": 45,
+      "d": 85,
+      "fit": [
+        85,
+        72,
+        78
+      ],
+      "kind": "adapted",
+      "o": 79
+    },
+    {
+      "n": "True Beauty",
+      "kr": "여신강림",
+      "src": 82,
+      "g": 88,
+      "d": 55,
+      "fit": [
+        85,
+        60,
+        75
+      ],
+      "kind": "adapted",
+      "o": 75
+    },
+    {
+      "n": "Sweet Home",
+      "kr": "스위트홈",
+      "src": 80,
+      "g": 76,
+      "nf": true,
+      "fit": [
+        85,
+        78,
+        82
+      ],
+      "kind": "adapted",
+      "o": 82
+    },
+    {
+      "n": "Secretary Kim",
+      "kr": "김비서가 왜 그럴까",
+      "src": 78,
+      "g": 56,
+      "d": 85,
+      "fit": [
+        92,
+        75,
+        45
+      ],
+      "kind": "adapted",
+      "o": 72
+    },
+    {
+      "n": "Itaewon Class",
+      "kr": "이태원 클라쓰",
+      "src": 80,
+      "g": 43,
+      "d": 85,
+      "fit": [
+        92,
+        78,
+        25
+      ],
+      "kind": "adapted",
+      "o": 66
+    },
+    {
+      "n": "Hellbound",
+      "kr": "지옥",
+      "src": 60,
+      "g": 65,
+      "nf": true,
+      "fit": [
+        85,
+        78,
+        72
+      ],
+      "kind": "adapted",
+      "o": 79
+    },
+    {
+      "n": "Business Proposal",
+      "kr": "사내맞선",
+      "src": 72,
+      "g": 58,
+      "d": 70,
+      "fit": [
+        92,
+        75,
+        45
+      ],
+      "kind": "adapted",
+      "o": 72
+    },
+    {
+      "n": "Yumi's Cells",
+      "kr": "유미의 세포들",
+      "src": 70,
+      "g": 0,
+      "d": 55,
+      "fit": [
+        78,
+        62,
+        85
+      ],
+      "kind": "adapted",
+      "note": "Live-action + CG hybrid — a case single-format routing misses.",
+      "o": 76
+    },
+    {
+      "n": "Cheese in the Trap",
+      "kr": "치즈인더트랩",
+      "src": 75,
+      "g": 4,
+      "d": 55,
+      "fit": [
+        85,
+        75,
+        65
+      ],
+      "kind": "adapted",
+      "o": 76
+    },
+    {
+      "n": "Gangnam Beauty",
+      "kr": "내 ID는 강남미인",
+      "src": 68,
+      "g": 19,
+      "d": 55,
+      "fit": [
+        85,
+        65,
+        45
+      ],
+      "kind": "adapted",
+      "o": 66
+    },
+    {
+      "n": "D.P.",
+      "kr": "디피",
+      "src": 62,
+      "g": 33,
+      "nf": true,
+      "fit": [
+        85,
+        78,
+        45
+      ],
+      "kind": "adapted",
+      "note": "Netflix title — domestic impact under-counted.",
+      "o": 70
+    },
+    {
+      "n": "The Sound of Magic",
+      "kr": "안나라수마나라",
+      "src": 55,
+      "g": 25,
+      "nf": true,
+      "fit": [
+        78,
+        72,
+        75
+      ],
+      "kind": "adapted",
+      "o": 75
+    }
+  ]
+}

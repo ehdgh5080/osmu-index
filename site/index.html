@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSMU Optionality Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --bg:#0A0C10; --surface:#12161D; --raise:#1A1F28; --raise2:#232934;
+    --tx:#E9ECF0; --tx2:#99A0AB; --tx3:#636A75; --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+    --drama:#F09B4E; --drama-bg:rgba(240,155,78,.14); --drama-tx:#F4AE72;
+    --anime:#8C7DF7; --anime-bg:rgba(140,125,247,.16); --anime-tx:#A99CF9;
+    --film:#22C0AC;  --film-bg:rgba(34,192,172,.14);  --film-tx:#4DD3C0;
+    --maxw:1120px; --sans:"Geist",-apple-system,system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--tx);font-size:16.5px;line-height:1.7;-webkit-font-smoothing:antialiased;letter-spacing:-.011em}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-left:26px;padding-right:26px}
+  b,strong{font-weight:700}
+  .num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .eyebrow{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3)}
+  a{color:inherit}
+  .nav{border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:rgba(10,12,16,.82);backdrop-filter:blur(10px)}
+  .nav .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+  .nav .brand{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.04em;text-decoration:none}
+  .nav .brand b{color:var(--drama)}
+  .nav a.lk{font-family:var(--mono);font-size:12.5px;color:var(--tx2);text-decoration:none;border:1px solid var(--line2);padding:7px 13px;border-radius:9px;transition:.15s}
+  .nav a.lk:hover{color:var(--tx);border-color:var(--tx3)}
+
+  /* HERO */
+  .hero{padding:54px 0 52px;border-bottom:1px solid var(--line);
+    background:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px) 0 0/100% 32px,
+               linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px) 0 0/32px 100%, var(--bg)}
+  .hero-grid{display:grid;grid-template-columns:1fr .78fr;gap:46px;align-items:center}
+  .hero h1{font-size:clamp(32px,4.3vw,50px);font-weight:700;line-height:1.1;letter-spacing:-.04em;margin:18px 0 0;max-width:14ch}
+  .hero h1 .hl{color:var(--drama)}
+  .hero .lede{margin-top:20px;max-width:38em;font-size:clamp(15.5px,1.6vw,17.5px);color:var(--tx2);font-weight:400;line-height:1.56}
+  .hero .lede b{color:var(--tx);font-weight:600}
+  .hero .lede a{color:var(--anime-tx);text-decoration:none;border-bottom:1px solid rgba(169,156,249,.4);white-space:nowrap}
+  .stat-strip{display:flex;gap:32px;margin-top:32px;flex-wrap:wrap}
+  .stat-strip .v{font-family:var(--mono);font-size:25px;font-weight:600;letter-spacing:-.04em}
+  .stat-strip .v small{color:var(--tx3)}
+  .stat-strip .k{font-size:12px;color:var(--tx3);font-weight:500;margin-top:3px}
+  .hero-viz{position:relative;border:1px solid var(--line2);border-radius:16px;overflow:hidden;aspect-ratio:1/0.9;min-height:280px;
+    background:radial-gradient(120% 120% at 72% 18%,rgba(140,125,247,.12),transparent 58%),var(--surface)}
+  .hero-viz canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #heroMap{display:block;width:100%;height:100%}
+  .viz-cap{position:absolute;left:14px;top:13px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--tx2);text-transform:uppercase;background:rgba(10,12,16,.62);padding:4px 9px;border-radius:7px;border:1px solid var(--line)}
+
+  section.block{padding-top:64px;padding-bottom:64px}
+  .sec-head h2{font-size:clamp(24px,3.2vw,31px);font-weight:700;letter-spacing:-.035em;line-height:1.18;margin-top:8px}
+  .sec-head .sub{margin-top:12px;max-width:52em;color:var(--tx2);font-size:15.5px;font-weight:400;line-height:1.55}
+  .sec-head .sub b{color:var(--tx);font-weight:600}
+
+  /* INSIGHTS */
+  .insights{background:var(--surface);border-bottom:1px solid var(--line);border-top:1px solid var(--line)}
+  .ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+  .ins{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden;transition:border-color .18s,transform .18s}
+  .ins:hover{border-color:var(--line2);transform:translateY(-2px)}
+  .ins::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .ins.a-drama::before{background:var(--drama);box-shadow:0 0 16px var(--drama)} .ins.a-anime::before{background:var(--anime);box-shadow:0 0 16px var(--anime)} .ins.a-film::before{background:var(--film);box-shadow:0 0 16px var(--film)}
+  .ins .kick{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .ins.a-drama .kick{color:var(--drama-tx)} .ins.a-anime .kick{color:var(--anime-tx)} .ins.a-film .kick{color:var(--film-tx)}
+  .ins h3{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.25;margin:12px 0 14px}
+  .ins .names{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .ins .nm{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--tx2);background:var(--raise);border:1px solid var(--line);padding:3px 9px;border-radius:7px}
+  .ins .nm b{color:var(--tx);font-weight:600}
+  .ins .why{font-size:13.5px;color:var(--tx2);font-weight:400;line-height:1.5;border-top:1px solid var(--line);padding-top:13px}
+  .ins .why b{color:var(--tx);font-weight:600}
+  .ins-note{margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--tx3);line-height:1.6}
+
+  /* SCREEN cards */
+  .wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:30px}
+  .wl-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;position:relative;overflow:hidden;transition:border-color .18s,transform .18s}
+  .wl-card:hover{border-color:var(--line2);transform:translateY(-2px)}
+  .wl-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .wl-card.drama::before{background:var(--drama);box-shadow:0 0 14px var(--drama)} .wl-card.anime::before{background:var(--anime);box-shadow:0 0 14px var(--anime)} .wl-card.film::before{background:var(--film);box-shadow:0 0 14px var(--film)}
+  .wl-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .wl-name{font-size:20px;font-weight:700;letter-spacing:-.03em;line-height:1.18}
+  .wl-kr{font-size:12.5px;color:var(--tx3);font-weight:400;margin-top:3px}
+  .wl-osmu{text-align:right;flex-shrink:0}
+  .wl-osmu .v{font-family:var(--mono);font-size:30px;font-weight:600;letter-spacing:-.04em;line-height:1}
+  .wl-osmu .k{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;color:var(--tx3);margin-top:4px}
+  .wl-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;align-items:center}
+  .conf{font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 9px;border-radius:7px;letter-spacing:.02em}
+  .conf.high{background:var(--film-bg);color:var(--film-tx)} .conf.med{background:var(--drama-bg);color:var(--drama-tx)} .conf.low{background:var(--raise2);color:var(--tx2)}
+  .wl-band{margin-top:20px}
+  .wl-band-lab{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--tx3);display:flex;justify-content:space-between}
+  .wl-track{height:9px;border-radius:5px;background:var(--raise2);position:relative;margin-top:9px}
+  .wl-fill{position:absolute;height:100%;border-radius:5px;opacity:.5}
+  .wl-fill.drama{background:var(--drama)} .wl-fill.anime{background:var(--anime)} .wl-fill.film{background:var(--film)}
+  .wl-mark{position:absolute;top:-3px;width:3px;height:15px;border-radius:2px}
+  .wl-mark.drama{background:var(--drama);box-shadow:0 0 8px var(--drama)} .wl-mark.anime{background:var(--anime);box-shadow:0 0 8px var(--anime)} .wl-mark.film{background:var(--film);box-shadow:0 0 8px var(--film)}
+  .wl-foot{font-size:13.5px;color:var(--tx2);font-weight:400;margin-top:16px;line-height:1.5}
+
+  .read-hint{margin:24px 0 10px;font-family:var(--mono);font-size:12.5px;color:var(--tx3);font-weight:400}
+  .tbl-wrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  thead th{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3);text-align:right;padding:14px 16px;background:var(--raise);border-bottom:1px solid var(--line)}
+  thead th.l{text-align:left}
+  tbody td{padding:13px 16px;border-bottom:1px solid var(--line);text-align:right;font-weight:500;font-family:var(--mono);letter-spacing:-.02em}
+  tbody tr:last-child td{border-bottom:none}
+  tbody td.l{text-align:left;font-family:var(--sans);font-weight:600;font-size:15.5px;letter-spacing:-.01em}
+  tbody td.l small{display:block;font-family:var(--mono);font-size:11.5px;color:var(--tx3);font-weight:400;margin-top:2px}
+  tbody td.rank{color:var(--tx3);font-weight:500;width:34px}
+  tr.row.val td:not(.osmu-cell){opacity:.6} tr.row:hover{background:var(--raise)} tr.row:hover td{opacity:1}
+  .grp td{background:var(--bg);font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);padding:18px 16px 8px;text-align:left}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;font-weight:500;padding:3px 9px;border-radius:7px;white-space:nowrap}
+  .chip i{width:6px;height:6px;border-radius:50%}
+  .chip.drama{background:var(--drama-bg);color:var(--drama-tx)} .chip.drama i{background:var(--drama)}
+  .chip.anime{background:var(--anime-bg);color:var(--anime-tx)} .chip.anime i{background:var(--anime)}
+  .chip.film{background:var(--film-bg);color:var(--film-tx)} .chip.film i{background:var(--film)}
+  .osmu-big{font-family:var(--mono);font-size:17px;font-weight:600}
+  .osmu-cell{padding-right:16px}
+  .osmu-wrap{display:inline-flex;align-items:center;gap:11px}
+  .osmu-bar{width:56px;height:6px;border-radius:4px;background:var(--raise2);overflow:hidden;position:relative;flex-shrink:0}
+  .osmu-bar i{position:absolute;left:0;top:0;height:100%;border-radius:4px;opacity:.9}
+  .osmu-n{font-family:var(--mono);font-size:16px;font-weight:600;width:26px;text-align:right}
+  .live-pill{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--anime-tx);background:var(--anime-bg);padding:2px 6px;border-radius:5px;margin-left:8px}
+  .muted{color:var(--tx3);font-weight:400}
+
+  .map-sec{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .map-card{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:28px}
+  .map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  .map-howto{font-size:13px;font-weight:400;color:var(--tx2)} .map-howto b{color:var(--tx);font-weight:600}
+  .filters{display:flex;gap:7px;flex-wrap:wrap}
+  .filters button{font-family:var(--mono);font-size:12.5px;font-weight:500;cursor:pointer;background:var(--raise);color:var(--tx2);border:1px solid var(--line2);padding:7px 13px;border-radius:9px;transition:.15s}
+  .filters button:hover{color:var(--tx);border-color:var(--tx3)}
+  .filters button[aria-pressed="true"]{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+  .map-grid{display:grid;grid-template-columns:1fr 248px;gap:20px;align-items:start}
+  svg.field{display:block;width:100%;height:auto;overflow:visible}
+  .gridline{stroke:var(--line);stroke-dasharray:1 6}
+  .contour{fill:none;stroke:var(--anime);stroke-width:1;stroke-dasharray:2 5;opacity:.2}
+  .contour-lab{font-family:var(--mono);font-size:9.5px;fill:var(--tx3);opacity:.85}
+  .tick{font-family:var(--mono);font-size:10.5px;fill:var(--tx3);font-weight:400}
+  .axcap{font-family:var(--mono);font-size:11px;fill:var(--tx2);font-weight:500;letter-spacing:.03em}
+  .quad{font-family:var(--mono);font-size:11px;fill:var(--tx3);font-weight:500}
+  .pt{cursor:pointer}.pt circle{transition:opacity .2s}.pt.dim{opacity:.1}
+  .pulse{animation:pulse 2.8s ease-out infinite}
+  @keyframes pulse{0%{r:9;opacity:.5}70%{r:22;opacity:0}100%{opacity:0}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .hlabel-bg{fill:var(--raise2);stroke:var(--line2)} .hlabel-tx{font-family:var(--mono);font-size:12px;font-weight:500;fill:var(--tx)}
+  .readout{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:20px;min-height:236px}
+  .ro-hint{font-size:13.5px;color:var(--tx3);font-weight:400;line-height:1.7}
+  .ro-name{font-size:19px;font-weight:700;letter-spacing:-.025em;line-height:1.2}
+  .ro-kr{font-size:12px;color:var(--tx3);font-weight:400;margin-top:2px}
+  .ro-chip{margin-top:14px} .ro-rows{margin-top:16px;display:grid;gap:9px}
+  .ro-row{display:flex;justify-content:space-between;font-size:13.5px;font-weight:500;gap:12px}
+  .ro-row span{color:var(--tx3);font-weight:400} .ro-row b{font-family:var(--mono);font-weight:600;text-align:right} .ro-row.big b{font-size:17px}
+  .ro-note{margin-top:14px;font-size:12.5px;color:var(--drama-tx);font-weight:400;line-height:1.5;background:var(--drama-bg);padding:10px 12px;border-radius:9px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-family:var(--mono);font-size:12px;font-weight:400;color:var(--tx2)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .lg-dot{width:10px;height:10px;border-radius:50%} .lg-ring{width:10px;height:10px;border-radius:50%;border:2px solid var(--tx3)}
+
+  /* method page */
+  .explain h2,.mblock h2{font-size:clamp(24px,3.2vw,32px);font-weight:700;letter-spacing:-.035em;line-height:1.2}
+  .explain .intro{margin-top:16px;max-width:48em;color:var(--tx2);font-size:17px;font-weight:400;line-height:1.6}
+  .explain .intro b{color:var(--tx);font-weight:600}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;position:relative}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--tx);color:var(--bg);font-weight:700;font-size:14px;font-family:var(--mono)}
+  .step h3{font-size:17.5px;font-weight:700;margin:15px 0 7px;letter-spacing:-.02em}
+  .step p{font-size:14.5px;color:var(--tx2);font-weight:400;line-height:1.56} .step p b{color:var(--tx);font-weight:600}
+  .step .eq{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--tx2);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 11px;margin-top:14px;display:inline-block}
+  .step .soon{position:absolute;top:18px;right:18px;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--anime-tx);background:var(--anime-bg);padding:3px 8px;border-radius:6px}
+  .glossary{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 24px}
+  .gl{display:flex;gap:18px;padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .gl:last-child{border-bottom:none}
+  .gl .t{font-family:var(--mono);font-size:13.5px;font-weight:600;width:150px;flex-shrink:0}
+  .gl .t.drama{color:var(--drama-tx)} .gl .t.film{color:var(--film-tx)}
+  .gl .d{font-size:14.5px;color:var(--tx2);font-weight:400;line-height:1.5}
+  .src-note{margin-top:16px;font-size:14.5px;color:var(--tx2);font-weight:400;line-height:1.6;max-width:54em}
+  .src-note b{color:var(--tx);font-weight:600}
+  .meth-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;margin-top:30px}
+  .meth p{margin-bottom:15px;color:var(--tx2);font-size:15.5px;font-weight:400;line-height:1.64} .meth p b{color:var(--tx);font-weight:600}
+  .meth h3{font-size:14px;font-weight:700;color:var(--tx);margin:24px 0 10px;letter-spacing:-.015em}
+  .vbox{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px}
+  .vrow{display:flex;gap:16px;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--line)}
+  .vrow:first-child{padding-top:0}.vrow:last-child{border-bottom:none;padding-bottom:0}
+  .vrow .vb{font-family:var(--mono);font-size:20px;font-weight:600;flex-shrink:0;width:84px;letter-spacing:-.03em;line-height:1.1}
+  .vrow .vb.ok{color:var(--film-tx)} .vrow .vb.warn{color:var(--drama-tx)} .vrow .vb.go{color:var(--anime-tx)}
+  .vrow .vt{font-size:14px;color:var(--tx2);font-weight:400;line-height:1.5} .vrow .vt b{color:var(--tx);font-weight:600}
+  .limits{margin-top:26px}
+  .limits li{list-style:none;padding-left:22px;position:relative;font-size:14.5px;color:var(--tx2);font-weight:400;margin-bottom:12px;line-height:1.55}
+  .limits li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--drama)}
+  .limits li b{color:var(--tx);font-weight:600}
+  .example{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+  .example .tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3)}
+  .example .exname{font-size:23px;font-weight:700;letter-spacing:-.03em;margin-top:5px}
+  .example .exname small{font-size:14px;color:var(--tx3);font-weight:500;margin-left:8px}
+  .example .exdesc{font-size:14.5px;color:var(--tx2);font-weight:400;max-width:38em;margin-top:7px;line-height:1.55} .example .exdesc b{color:var(--tx);font-weight:600}
+  .ex-calc{display:flex;align-items:center;gap:13px;margin-left:auto;flex-wrap:wrap}
+  .ex-box{text-align:center} .ex-box .bn{font-family:var(--mono);font-size:10.5px;color:var(--tx3);font-weight:500;letter-spacing:.04em}
+  .ex-box .bv{font-family:var(--mono);font-size:25px;font-weight:600;letter-spacing:-.03em} .ex-op{font-size:19px;color:var(--tx3)} .ex-box.result .bv{color:var(--drama)}
+
+  footer{padding:44px 0;border-top:1px solid var(--line);color:var(--tx3);font-size:12.5px;font-weight:400;line-height:1.7}
+  footer .wrap{display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap} footer b{color:var(--tx2);font-weight:600} .mono-l{font-family:var(--mono)}
+  footer a.flk{color:var(--anime-tx);text-decoration:none}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;gap:30px} .hero-viz{min-height:230px;aspect-ratio:16/10;order:-1}
+    .ins-grid{grid-template-columns:1fr} .steps{grid-template-columns:1fr}
+    .map-grid{grid-template-columns:1fr} .meth-grid{grid-template-columns:1fr;gap:28px} .ex-calc{margin-left:0} .gl .t{width:120px}
+  }
+  /* DETAIL DRAWER */
+  .drov{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+  .drov.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(450px,94vw);background:var(--surface);border-left:1px solid var(--line2);
+    transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);z-index:41;overflow-y:auto}
+  .drawer.open{transform:none}
+  .dr-pad{padding:26px 26px 40px}
+  .dr-close{position:sticky;top:0;float:right;margin:-4px -4px 0 0;width:34px;height:34px;border-radius:9px;border:1px solid var(--line2);
+    background:var(--raise);color:var(--tx2);font-size:17px;cursor:pointer;line-height:1;transition:.15s}
+  .dr-close:hover{color:var(--tx);border-color:var(--tx3)}
+  .dr-status{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tx3)}
+  .dr-name{font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-top:8px}
+  .dr-kr{font-size:13px;color:var(--tx3);font-weight:400;margin-top:3px}
+  .dr-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  .dr-osmu{display:flex;align-items:baseline;gap:12px;margin:24px 0;padding:18px 20px;background:var(--bg);border:1px solid var(--line);border-radius:13px}
+  .dr-osmu .ov{font-family:var(--mono);font-size:40px;font-weight:700;letter-spacing:-.04em;line-height:1}
+  .dr-osmu .of{font-family:var(--mono);font-size:12.5px;color:var(--tx3);line-height:1.5}
+  .dr-osmu .of b{color:var(--tx2);font-weight:600}
+  .dr-sec{margin-top:24px}
+  .dr-sec h4{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:13px}
+  .fitrow{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .fitrow .fl{font-size:13px;width:54px;color:var(--tx2);font-weight:500}
+  .fitrow .ft{flex:1;height:8px;border-radius:5px;background:var(--raise2);position:relative;overflow:hidden}
+  .fitrow .ff{position:absolute;left:0;height:100%;border-radius:5px;opacity:.85}
+  .fitrow .fv{font-family:var(--mono);font-size:12.5px;font-weight:600;width:30px;text-align:right;color:var(--tx)}
+  .fitrow.route .fl{color:var(--tx);font-weight:700}
+  .fitrow.route .fl::after{content:" ◄";font-family:var(--mono);font-size:10px}
+  .dr-line{display:flex;justify-content:space-between;gap:14px;font-size:13.5px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .dr-line:last-child{border-bottom:none}
+  .dr-line span{color:var(--tx3)} .dr-line b{font-family:var(--mono);font-weight:600;text-align:right}
+  .dr-calc{font-family:var(--mono);font-size:12.5px;color:var(--tx2);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:13px 15px;line-height:1.7;margin-top:6px}
+  .dr-calc b{color:var(--tx);font-weight:600}
+  .dr-analysis{font-size:14px;color:var(--tx2);font-weight:400;line-height:1.6;margin-top:6px}
+  .dr-analysis b{color:var(--tx);font-weight:600}
+  .dr-note{margin-top:14px;font-size:12.5px;color:var(--drama-tx);font-weight:400;line-height:1.5;background:var(--drama-bg);padding:11px 13px;border-radius:10px}
+  tr.row{cursor:pointer} tr.row .l::after{content:" ›";color:var(--tx3);font-family:var(--mono)}
+
+  @media (prefers-reduced-motion:reduce){.pulse{animation:none}*{transition:none!important}}
+
+  /* ===== OVERHAUL: opportunity quadrants ===== */
+  :root{--franchise:#5DA9E9;--tentpole:#6C7C90;--niche:#7E9AC6;--pass:#565E6A;
+    --a-acquire:#3FB950;--a-watch:#E3B341;--a-motion:#8A93A0}
+  .quad-legend{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px;max-width:760px}
+  .ql{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden}
+  .ql::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .ql.franchise::before{background:var(--franchise);box-shadow:0 0 16px var(--franchise)}
+  .ql.tentpole::before{background:var(--tentpole);box-shadow:0 0 16px var(--tentpole)}
+  .ql.niche::before{background:var(--niche);box-shadow:0 0 16px var(--niche)}
+  .ql.pass::before{background:var(--pass)}
+  .ql .qt{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.02em}
+  .ql.franchise .qt{color:var(--franchise)} .ql.tentpole .qt{color:var(--tentpole)} .ql.niche .qt{color:var(--niche)} .ql.pass .qt{color:var(--tx2)}
+  .ql .qax{font-family:var(--mono);font-size:10.5px;color:var(--tx3);margin-top:3px;letter-spacing:.02em}
+  .ql .qd{font-size:13.5px;color:var(--tx2);font-weight:400;line-height:1.5;margin-top:10px}
+  .ql .qd b{color:var(--tx);font-weight:600}
+  .qbadge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.03em;padding:4px 10px;border-radius:8px}
+  .qbadge i{width:6px;height:6px;border-radius:50%}
+  .qbadge.franchise{background:rgba(93,169,233,.15);color:var(--franchise)} .qbadge.franchise i{background:var(--franchise)}
+  .qbadge.tentpole{background:rgba(108,124,144,.20);color:#9AA6B6} .qbadge.tentpole i{background:var(--tentpole)}
+  .qbadge.niche{background:rgba(126,154,198,.16);color:var(--niche)} .qbadge.niche i{background:var(--niche)}
+  .qbadge.pass{background:var(--raise2);color:var(--tx2)} .qbadge.pass i{background:var(--pass)}
+  .qzone{font-family:var(--mono);font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.5}
+  .qzone-sub{font-family:var(--mono);opacity:.4}
+  .twobar{display:flex;flex-direction:column;gap:2px} .twobar .tb-l{font-family:var(--mono);font-size:10.5px;color:var(--tx3);display:flex;justify-content:space-between}
+  .twobar .tb-t{height:6px;border-radius:4px;background:var(--raise2);overflow:hidden} .twobar .tb-f{height:100%;border-radius:4px}
+  .opens{font-family:var(--mono);font-size:12px;color:var(--tx2)} .opens b{color:var(--tx);font-weight:600}
+  .cardgroup-h{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);margin:34px 0 4px;display:flex;align-items:center;gap:10px}
+  .cardgroup-h::after{content:"";flex:1;height:1px;background:var(--line)}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="wrap"><a class="brand" href="index.html"><b>OSMU</b> Optionality Index</a><a class="lk" href="method.html">Method &amp; validation →</a></div></nav>
+
+<header class="hero"><div class="wrap hero-grid">
+  <div class="hero-copy">
+    <div class="eyebrow">OSMU Optionality Index · v0</div>
+    <h1>Every IP is a <span class="hl">different kind of bet</span></h1>
+    <p class="lede">Score the two things public data can actually measure — how strong the <b>source</b> is, and how many
+      <b>formats</b> it can carry — and each title falls into one of four opportunity types. No made-up dollar figures.
+      <a href="method.html">How it works →</a></p>
+    <div class="stat-strip">
+      <div><div class="v">29</div><div class="k">IP mapped</div></div>
+      <div><div class="v">4</div><div class="k">Opportunity types</div></div>
+      <div><div class="v">10</div><div class="k">Un-adapted discoveries</div></div>
+    </div>
+  </div>
+  <div class="hero-viz"><svg id="heroMap" viewBox="0 0 480 420" aria-label="IP mapped by source strength and optionality"></svg><div class="viz-cap">Source × optionality · 29 IP</div></div>
+</div></header>
+
+<!-- THE FRAME -->
+<section class="block insights"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">The Frame · what the axes mean</span><h2>Two measurable axes → four kinds of opportunity</h2>
+    <p class="sub">Instead of one opaque score, every title is placed by <b>source strength</b> (public readership &amp; momentum) and <b>optionality</b> (how many distinct-audience formats it can carry). Where it lands tells you <b>how to play it</b>.</p></div>
+  <div class="quad-legend">
+    <div class="ql franchise"><div class="qt">FRANCHISE</div><div class="qax">high source · high optionality</div>
+      <div class="qd">Big original that credibly carries <b>3 formats</b>. Build the whole franchise — drama, film, anime. Highest ceiling, most competition.</div></div>
+    <div class="ql niche"><div class="qt">NICHE MULTI</div><div class="qax">lower source · high optionality</div>
+      <div class="qd">Smaller original but <b>broad fit</b>. A low-cost multi-format play — spread small bets across audiences.</div></div>
+    <div class="ql tentpole"><div class="qt">TENTPOLE</div><div class="qax">high source · narrow optionality</div>
+      <div class="qd">Big original that fits <b>one format</b> strongly. A single concentrated bet — usually anime for action IP.</div></div>
+    <div class="ql pass"><div class="qt">PASS</div><div class="qax">lower source · narrow fit</div>
+      <div class="qd">Neither big nor broad. Not worth an option right now.</div></div>
+  </div>
+</div></div></section>
+
+<!-- THE READ -->
+<section class="block"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">The Read · what the map is telling us</span><h2>Three calls from the un-adapted field</h2></div>
+  <div class="ins-grid">
+    <div class="ins a-film">
+      <div class="kick">Franchise row is already taken</div>
+      <h3>The obvious multi-format IP has moved</h3>
+      <div class="names"><span class="nm">Solo Leveling</span><span class="nm">Mount Hua</span><span class="nm">Eleceed</span></div>
+      <div class="why"><b>Why it matters:</b> nearly every franchise-grade source is already in adaptation. The one un-moved franchise-grade discovery is <b>광마회귀</b> — the scarce ACQUIRE.</div>
+    </div>
+    <div class="ins a-drama">
+      <div class="kick">Discoveries cluster in Tentpole</div>
+      <h3>Big sources, one strong format</h3>
+      <div class="names"><span class="nm"><b>검술명가</b></span><span class="nm"><b>나노마신</b></span><span class="nm"><b>템빨</b></span><span class="nm"><b>백작가의 망나니</b></span></div>
+      <div class="why"><b>Why it matters:</b> the un-adapted discoveries are big anime-route sources that carry one format well — cheaper single-bet options, not full franchises.</div>
+    </div>
+    <div class="ins a-anime">
+      <div class="kick">Format-routing edge</div>
+      <h3>Every un-adapted route points to anime</h3>
+      <div class="names"><span class="nm">action</span><span class="nm">fantasy</span><span class="nm">martial-arts</span></div>
+      <div class="why"><b>Why it matters:</b> across Franchise and Tentpole, the un-screened sources route to animation. Don't overpay for live-action rights on this material.</div>
+    </div>
+  </div>
+</div></div></section>
+
+<!-- THE SCREEN, grouped by quadrant -->
+<section class="block" style="background:var(--surface);border-top:1px solid var(--line)"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">The Screen — un-adapted pipeline</span><h2>Live calls, grouped by opportunity type</h2>
+    <p class="sub"><b>◆ Discovery</b> = no screen deal yet · action: <b style="color:var(--a-acquire)">ACQUIRE</b> · <b style="color:var(--a-watch)">WATCH</b> · <b style="color:var(--a-motion)">IN MOTION</b> (already adapting).</p></div>
+  <div id="screen"></div>
+</div></section>
+
+<!-- MAP -->
+<section class="block map-sec"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">The Map</span><h2>Source strength × optionality</h2>
+    <p class="sub">Right = stronger <b>source</b>. Up = higher <b>optionality</b>. The four zones are the opportunity types. Click any point for the full read.</p></div>
+  <div class="map-card">
+    <div class="map-toolbar">
+      <div class="map-howto">Color = format · <b>Filled</b> = adapted · <b>Ring</b> = live call</div>
+      <div class="filters" role="group" aria-label="Format filter">
+        <button data-f="all" aria-pressed="true">All</button><button data-f="drama" aria-pressed="false">Drama</button>
+        <button data-f="anime" aria-pressed="false">Anime</button><button data-f="film" aria-pressed="false">Film</button>
+      </div>
+    </div>
+    <div class="map-grid">
+      <svg class="field" viewBox="0 0 820 520" id="svg" aria-label="Source vs optionality scatter"></svg>
+      <aside class="readout"><div id="roHint" class="ro-hint">Hover or tap a point to see its read.</div><div id="roBody" style="display:none"></div></aside>
+    </div>
+    <div class="legend">
+      <span><i class="lg-dot" style="background:var(--drama)"></i>Drama</span>
+      <span><i class="lg-dot" style="background:var(--anime)"></i>Anime</span>
+      <span><i class="lg-dot" style="background:var(--film)"></i>Film</span>
+      <span><i class="lg-dot" style="background:var(--tx3)"></i>Filled = adapted</span>
+      <span><i class="lg-ring"></i>Ring = live call</span>
+    </div>
+  </div>
+</div></section>
+
+<!-- TABLE -->
+<section class="block" style="background:var(--surface);border-top:1px solid var(--line)"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">Full Index</span><h2>All titles</h2>
+    <p class="sub"><b>Live calls</b> are un-adapted. <b>Validation</b> titles (greyed) are already on screen — the backtest set.</p></div>
+  <div class="read-hint">Click any row for the full breakdown · Source &amp; Optionality are <b style="color:var(--tx2)">0–100 indices for relative comparison</b> (not dollars) · Opens = formats with fit ≥ 70</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th class="l">#</th><th class="l">IP</th><th>Source</th><th>Optionality</th><th>Opens</th><th>Format</th><th>Type</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div><b>OSMU Optionality Index</b> · v0 · June 2026<br>Independent analysis · public signals only · not investment advice · <a class="flk" href="method.html">Method &amp; validation →</a></div>
+  <div class="mono-l"><b>DATA</b><br>Source: public readership · Optionality: synopsis AI · Reach: TMDB + curated tiers</div>
+</div></footer>
+
+<div class="drov" id="drov"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script>
+const COL={drama:"#F09B4E",anime:"#8C7DF7",film:"#22C0AC"};
+const NM={drama:"Drama",anime:"Anime",film:"Film"};
+const CONF={high:"High",med:"Medium",low:"Low"};
+
+/* DATA : fit=[drama,film,anime], src=source strength, kind=adapted|forward */
+/* DATA:START (pipeline replaces this block) */
+const DATA=[
+ {n:"All of Us Are Dead",kr:"지금 우리 학교는",src:70,g:100,nf:true,fit:[85,75,70],kind:"adapted"},
+ {n:"Moving",kr:"무빙",src:72,g:35,d:85,fit:[85,78,72],kind:"adapted"},
+ {n:"The Uncanny Counter",kr:"경이로운 소문",src:68,g:45,d:85,fit:[85,72,78],kind:"adapted"},
+ {n:"True Beauty",kr:"여신강림",src:82,g:88,d:55,fit:[85,60,75],kind:"adapted"},
+ {n:"Sweet Home",kr:"스위트홈",src:80,g:76,nf:true,fit:[85,78,82],kind:"adapted"},
+ {n:"Secretary Kim",kr:"김비서가 왜 그럴까",src:78,g:56,d:85,fit:[92,75,45],kind:"adapted"},
+ {n:"Itaewon Class",kr:"이태원 클라쓰",src:80,g:43,d:85,fit:[92,78,25],kind:"adapted"},
+ {n:"Hellbound",kr:"지옥",src:60,g:65,nf:true,fit:[85,78,72],kind:"adapted"},
+ {n:"Business Proposal",kr:"사내맞선",src:72,g:58,d:70,fit:[92,75,45],kind:"adapted"},
+ {n:"Yumi's Cells",kr:"유미의 세포들",src:70,g:0,d:55,fit:[78,62,85],kind:"adapted",note:"Live-action + CG hybrid — a case single-format routing misses."},
+ {n:"Cheese in the Trap",kr:"치즈인더트랩",src:75,g:4,d:55,fit:[85,75,65],kind:"adapted"},
+ {n:"Gangnam Beauty",kr:"내 ID는 강남미인",src:68,g:19,d:55,fit:[85,65,45],kind:"adapted"},
+ {n:"D.P.",kr:"디피",src:62,g:33,nf:true,fit:[85,78,45],kind:"adapted",note:"Netflix title — domestic impact under-counted."},
+ {n:"The Sound of Magic",kr:"안나라수마나라",src:55,g:25,nf:true,fit:[78,72,75],kind:"adapted"},
+ {n:"Solo Leveling",kr:"나 혼자만 레벨업",comp:[100,95,80,92],band:[80,98],fit:[65,72,88],kind:"forward",stat:"anime done · live-action announced",foot:"Proven global action IP — multiple options already in play."},
+ {n:"Nano Machine",kr:"나노마신",comp:[85,82,80,85],band:[58,82],fit:[66,66,90],kind:"forward",disc:true,foot:"Surging Naver murim-SF hit — high momentum, clean anime route, no deal yet."},
+ {n:"Return of the Mount Hua Sect",kr:"화산귀환",comp:[92,72,98,48],band:[60,82],fit:[75,68,85],kind:"forward",stat:"anime in production",foot:"Huge source (~700M novel views) but momentum past peak — ratings & readers declining."},
+ {n:"Lookism",kr:"외모지상주의",comp:[90,70,85,78],band:[50,74],fit:[75,65,80],kind:"forward",stat:"anime airing",foot:"Global Naver hit; dual-body premise needs animation."},
+ {n:"The Youngest Son of a Swordsmanship Family",kr:"검술명가 막내아들",comp:[82,78,88,72],band:[62,86],fit:[62,70,90],kind:"forward",disc:true,foot:"KakaoPage mega-hit (1,100+ ch). Strong single-format anime route."},
+ {n:"The Remarried Empress",kr:"재혼황후",comp:[85,82,70,78],band:[68,90],fit:[92,72,78],kind:"forward",stat:"drama in the works",foot:"Palace fantasy carrying drama, film and anime — rare 3-format breadth."},
+ {n:"Overgeared",kr:"템빨",comp:[82,76,92,68],band:[55,80],fit:[55,68,88],kind:"forward",disc:true,foot:"Long-running VR-gaming fantasy with a deep world — natural anime candidate."},
+ {n:"Eleceed",kr:"일렉시드",comp:[80,82,78,82],band:[54,80],fit:[62,75,90],kind:"forward",stat:"anime airing",foot:"Fast superpower action; top anime fit."},
+ {n:"Reformation of the Deadbeat Noble",kr:"광마회귀",comp:[80,78,82,70],band:[58,82],fit:[68,68,88],kind:"forward",disc:true,foot:"Franchise-grade martial-arts source with no screen deal yet — anime-led."},
+ {n:"The Greatest Estate Designer",kr:"역대급 영지 설계사",comp:[74,80,70,82],band:[52,76],fit:[72,62,82],kind:"forward",disc:true,foot:"Rising strategy-fantasy with strong buzz — anime or light drama."},
+ {n:"Trash of the Count's Family",kr:"백작가의 망나니가 되었다",comp:[76,74,80,66],band:[56,80],fit:[62,68,86],kind:"forward",disc:true,foot:"Redice action-fantasy hit — clean single-format anime candidate."},
+ {n:"SSS-Class Suicide Hunter",kr:"SSS급 죽어야 사는 헌터",comp:[76,74,68,72],band:[54,78],fit:[70,72,85],kind:"forward",disc:true,foot:"Dark hunter premise, broad fit — a low-cost multi-format experiment."},
+ {n:"Mercenary Enrollment",kr:"입학용병",comp:[76,74,72,70],band:[55,80],fit:[78,72,82],kind:"forward",disc:true,foot:"Naver action hit with drama crossover — broad but mid-size source."},
+ {n:"The Villainess Is a Marionette",kr:"악녀는 마리오네트",comp:[72,78,62,66],band:[48,74],fit:[85,60,78],kind:"forward",disc:true,foot:"Romance-fantasy villainess — the rare drama-led discovery."},
+ {n:"The Debut or Die",kr:"데뷔 못 하면 죽는 병",comp:[72,78,65,70],band:[50,74],fit:[88,65,60],kind:"forward",disc:true,foot:"Idol-survival web-novel — non-anime call; drama / K-pop route."},
+];
+/* DATA:END */
+
+/* MODEL */
+const WT={drama:1.0,film:0.70,anime:0.85}, WSUM=2.55;
+const W_SRC={reach:0.40,eng:0.25,scale:0.20,mom:0.15};
+const SRCPARTS=[["reach","Reach"],["eng","Engagement"],["scale","Scale"],["mom","Momentum"]];
+const optOf=fit=>Math.round((fit[0]/100*WT.drama+fit[1]/100*WT.film+fit[2]/100*WT.anime)/WSUM*100);
+DATA.forEach(p=>{
+  p.o=optOf(p.fit);
+  if(p.comp) p.src=Math.round(W_SRC.reach*p.comp[0]+W_SRC.eng*p.comp[1]+W_SRC.scale*p.comp[2]+W_SRC.mom*p.comp[3]);
+  p.payoff = p.kind==="adapted" ? (p.nf?p.g:Math.max(p.g,p.d||0)) : (p.band[0]+p.band[1])/2;
+  p.fmt = ["drama","film","anime"][p.fit.indexOf(Math.max(...p.fit))];
+});
+const median=arr=>{const a=[...arr].sort((x,y)=>x-y),n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2;};
+const SRC_T=median(DATA.map(p=>p.src)), OPT_T=median(DATA.map(p=>p.o));
+function quad(p){const hs=p.src>=SRC_T,ho=p.o>=OPT_T;
+  if(hs&&ho)return{k:"franchise",t:"FRANCHISE",d:"Big source × multi-format — build the whole franchise."};
+  if(hs&&!ho)return{k:"tentpole",t:"TENTPOLE",d:"Big source, one strong format — a single concentrated bet."};
+  if(!hs&&ho)return{k:"niche",t:"NICHE MULTI",d:"Smaller source, broad fit — a low-cost multi-format play."};
+  return{k:"pass",t:"PASS",d:"Neither big nor broad — skip for now."};}
+const opensOf=p=>p.fit.filter(v=>v>=70).length;
+const fmtPriority=p=>[["Drama",p.fit[0]],["Film",p.fit[1]],["Anime",p.fit[2]]].filter(x=>x[1]>=60).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+const allO=DATA.map(p=>p.o);
+function actionOf(p){if(p.kind!=="forward")return null;const q=quad(p).k;
+  if(p.disc&&(q==="franchise"||q==="tentpole"))return{t:"ACQUIRE",c:"var(--a-acquire)",b:"rgba(63,185,80,.14)"};
+  if(p.disc)return{t:"WATCH",c:"var(--a-watch)",b:"rgba(227,179,65,.14)"};
+  return{t:"IN MOTION",c:"var(--a-motion)",b:"rgba(138,147,160,.16)"};}
+
+/* ===== SCATTER : x = source, y = optionality, with quadrant zones ===== */
+const W=820,H=520,PL=58,PR=80,PT=26,PB=52;
+const xMin=48,xMax=100,yMin=62,yMax=86;
+const xP=v=>PL+(v-xMin)/(xMax-xMin)*(W-PL-PR);
+const yP=v=>PT+(1-(v-yMin)/(yMax-yMin))*(H-PT-PB);
+const rOf=o=>7+(Math.max(60,o)-60)/26*6;
+const svg=document.getElementById("svg"),NS="http://www.w3.org/2000/svg";
+const E=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const QC={franchise:"#5DA9E9",tentpole:"#6C7C90",niche:"#7E9AC6",pass:"#565E6A"};
+function drawField(target,Wd,Hd,pl,pr,pt,pb,small){
+  const xx=v=>pl+(v-xMin)/(xMax-xMin)*(Wd-pl-pr);
+  const yy=v=>pt+(1-(v-yMin)/(yMax-yMin))*(Hd-pt-pb);
+  const cx=xx(SRC_T), cy=yy(OPT_T);
+  // quadrant tints
+  const zones=[["franchise",cx,pt,Wd-pr-cx,cy-pt],["niche",pl,pt,cx-pl,cy-pt],["tentpole",cx,cy,Wd-pr-cx,Hd-pb-cy],["pass",pl,cy,cx-pl,Hd-pb-cy]];
+  zones.forEach(([k,x,y,w,h])=>target.appendChild(E("rect",{x:x,y:y,width:w,height:h,fill:QC[k],"fill-opacity":.05})));
+  // divider lines
+  target.appendChild(E("line",{x1:cx,y1:pt,x2:cx,y2:Hd-pb,stroke:"var(--line2)","stroke-dasharray":"3 4"}));
+  target.appendChild(E("line",{x1:pl,y1:cy,x2:Wd-pr,y2:cy,stroke:"var(--line2)","stroke-dasharray":"3 4"}));
+  // zone labels
+  const labs=[["FRANCHISE",Wd-pr-6,pt+14,"end","franchise"],["NICHE MULTI",pl+6,pt+14,"start","niche"],["TENTPOLE",Wd-pr-6,Hd-pb-8,"end","tentpole"],["PASS",pl+6,Hd-pb-8,"start","pass"]];
+  labs.forEach(([tx,x,y,anch,k])=>{const t=E("text",{x:x,y:y,"text-anchor":anch,class:"qzone",fill:QC[k]});t.setAttribute("font-size",small?"9":"11");t.textContent=tx;target.appendChild(t);});
+  return {xx,yy};
+}
+// axis ticks (main)
+for(let v=50;v<=100;v+=10){const x=xP(v);const t=E("text",{x:x,y:H-PB+18,class:"tick","text-anchor":"middle"});t.textContent=v;svg.appendChild(t);}
+for(let v=65;v<=85;v+=5){const y=yP(v);const t=E("text",{x:PL-9,y:y+4,class:"tick","text-anchor":"end"});t.textContent=v;svg.appendChild(t);}
+drawField(svg,W,H,PL,PR,PT,PB,false);
+const xc=E("text",{x:PL+(W-PL-PR)/2,y:H-8,class:"axcap","text-anchor":"middle"});xc.textContent="SOURCE STRENGTH →";svg.appendChild(xc);
+const yc=E("text",{class:"axcap","text-anchor":"middle"});yc.setAttribute("transform","translate(14,"+(PT+(H-PT-PB)/2)+") rotate(-90)");yc.textContent="OPTIONALITY →";svg.appendChild(yc);
+const hi=E("circle",{fill:"none","stroke-width":1.6,opacity:0});svg.appendChild(hi);
+const labG=E("g",{opacity:0});const labBg=E("rect",{rx:6,class:"hlabel-bg"});const labT=E("text",{class:"hlabel-tx","text-anchor":"middle"});
+labG.appendChild(labBg);labG.appendChild(labT);svg.appendChild(labG);
+function showLabel(p,x,y,r,c){
+  hi.setAttribute("cx",x);hi.setAttribute("cy",y);hi.setAttribute("r",r+5);hi.setAttribute("stroke",c);hi.setAttribute("opacity","1");
+  let ly=y-r-16; if(ly<PT+12) ly=y+r+22;
+  labT.setAttribute("x",x);labT.setAttribute("y",ly);labT.textContent=p.n;
+  let bb=labT.getBBox(),dx=0; if(bb.x-8<2)dx=2-(bb.x-8); if(bb.x+bb.width+8>W-2)dx=(W-2)-(bb.x+bb.width+8);
+  labT.setAttribute("x",x+dx);bb=labT.getBBox();
+  labBg.setAttribute("x",bb.x-8);labBg.setAttribute("y",bb.y-5);labBg.setAttribute("width",bb.width+16);labBg.setAttribute("height",bb.height+10);
+  labG.setAttribute("opacity","1");
+}
+const hideLabel=()=>{hi.setAttribute("opacity","0");labG.setAttribute("opacity","0");};
+const roHint=document.getElementById("roHint"),roBody=document.getElementById("roBody");
+DATA.forEach(p=>{
+  const x=xP(p.src),y=yP(p.o),r=rOf(p.o),c=COL[p.fmt];
+  const g=E("g",{class:"pt","data-fmt":p.fmt,tabindex:"0",role:"button","aria-label":p.n});
+  if(p.kind==="forward"){
+    g.appendChild(E("circle",{cx:x,cy:y,r:9,class:"pulse",fill:"none",stroke:c,"stroke-width":1.4}));
+    g.appendChild(E("circle",{cx:x,cy:y,r:r,fill:"var(--bg)",stroke:c,"stroke-width":2.4,style:"filter:drop-shadow(0 0 5px "+c+"99)"}));
+  }else{ g.appendChild(E("circle",{cx:x,cy:y,r:r,fill:c,"fill-opacity":.82,stroke:c,"stroke-width":1,style:"filter:drop-shadow(0 0 4px "+c+"66)"})); }
+  const show=()=>{renderRO(p,c);showLabel(p,x,y,r,c);};
+  g.addEventListener("mouseenter",show);g.addEventListener("focus",show);g.addEventListener("click",()=>{show();openDetail(p);});
+  g.addEventListener("mouseleave",hideLabel);g.addEventListener("blur",hideLabel);
+  svg.appendChild(g);
+});
+function renderRO(p,c){
+  roHint.style.display="none";roBody.style.display="block";
+  const q=quad(p);
+  roBody.innerHTML='<div class="ro-name">'+p.n+'</div><div class="ro-kr">'+p.kr+(p.kind==="forward"?" · live call":"")+'</div>'+
+    '<div class="ro-chip"><span class="qbadge '+q.k+'"><i></i>'+q.t+'</span></div>'+
+    '<div class="ro-rows"><div class="ro-row"><span>Source strength</span><b>'+p.src+'</b></div>'+
+    '<div class="ro-row"><span>Optionality</span><b>'+p.o+'</b></div>'+
+    '<div class="ro-row"><span>Opens</span><b>'+opensOf(p)+' of 3 formats</b></div>'+
+    '<div class="ro-row"><span>Format priority</span><b>'+fmtPriority(p).join(" › ")+'</b></div></div>';
+}
+document.querySelectorAll(".filters button").forEach(b=>{
+  b.addEventListener("click",()=>{const f=b.dataset.f;
+    document.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+    document.querySelectorAll(".pt").forEach(g=>g.classList.toggle("dim",f!=="all"&&g.dataset.fmt!==f));hideLabel();});
+});
+
+/* ===== HERO MINI-MAP ===== */
+(function(){
+  const hs=document.getElementById("heroMap"); if(!hs) return;
+  const Wh=480,Hh=420,pl=44,pr=26,pt=26,pb=42;
+  const {xx,yy}=drawField(hs,Wh,Hh,pl,pr,pt,pb,true);
+  DATA.forEach(p=>{const x=xx(p.src),y=yy(p.o),c=COL[p.fmt];
+    if(p.kind==="forward") hs.appendChild(E("circle",{cx:x,cy:y,r:5.5,fill:"var(--bg)",stroke:c,"stroke-width":2,style:"filter:drop-shadow(0 0 4px "+c+"aa)"}));
+    else hs.appendChild(E("circle",{cx:x,cy:y,r:4.5,fill:c,"fill-opacity":.85,style:"filter:drop-shadow(0 0 3px "+c+"66)"}));});
+  const cx=E("text",{x:pl+(Wh-pl-pr)/2,y:Hh-10,class:"axcap","text-anchor":"middle"});cx.setAttribute("font-size","10");cx.textContent="SOURCE →";hs.appendChild(cx);
+  const cy=E("text",{class:"axcap","text-anchor":"middle"});cy.setAttribute("font-size","10");cy.setAttribute("transform","translate(14,"+(pt+(Hh-pt-pb)/2)+") rotate(-90)");cy.textContent="OPTIONALITY →";hs.appendChild(cy);
+})();
+
+/* ===== TABLE ===== */
+const tb=document.getElementById("tbody");
+const minibar=(v,c)=>'<span class="osmu-wrap"><span class="osmu-bar"><i style="width:'+v+'%;background:linear-gradient(90deg,'+c+'66,'+c+')"></i></span><span class="osmu-n">'+v+'</span></span>';
+function addGroup(label){const tr=document.createElement("tr");tr.className="grp";tr.innerHTML='<td colspan="7">'+label+'</td>';tb.appendChild(tr);}
+function addRow(p,rank){
+  const q=quad(p),c=COL[p.fmt];
+  const tr=document.createElement("tr");tr.className="row"+(p.kind==="adapted"?" val":"");
+  tr.innerHTML='<td class="rank">'+rank+'</td><td class="l">'+p.n+(p.kind==="forward"?'<span class="live-pill">LIVE</span>':'')+'<small>'+p.kr+'</small></td>'+
+    '<td class="osmu-cell">'+minibar(p.src,c)+'</td><td class="osmu-cell">'+minibar(p.o,c)+'</td>'+
+    '<td>'+opensOf(p)+'</td><td style="text-align:right"><span class="chip '+p.fmt+'"><i></i>'+NM[p.fmt]+'</span></td>'+
+    '<td style="text-align:right"><span class="qbadge '+q.k+'"><i></i>'+q.t+'</span></td>';
+  tr.addEventListener("click",()=>openDetail(p));
+  tb.appendChild(tr);
+}
+const liveS=DATA.filter(p=>p.kind==="forward").sort((a,b)=>b.src-a.src);
+const valS=DATA.filter(p=>p.kind==="adapted").sort((a,b)=>b.src-a.src);
+addGroup("Live calls — un-adapted");liveS.forEach((p,i)=>addRow(p,i+1));
+addGroup("Validation — already adapted");valS.forEach((p,i)=>addRow(p,i+1));
+
+/* ===== SCREEN CARDS grouped by quadrant ===== */
+const screen=document.getElementById("screen");
+const order=[["franchise","Franchise candidates"],["tentpole","Tentpole bets"],["niche","Niche multi-format"],["pass","Pass"]];
+const fwd=DATA.filter(p=>p.kind==="forward");
+order.forEach(([k,label])=>{
+  const items=fwd.filter(p=>quad(p).k===k).sort((a,b)=>b.src-a.src);
+  if(!items.length)return;
+  const h=document.createElement("div");h.className="cardgroup-h";h.innerHTML='<span class="qbadge '+k+'"><i></i>'+label+'</span>';screen.appendChild(h);
+  const grid=document.createElement("div");grid.className="wl-grid";
+  items.forEach(p=>{
+    const c=COL[p.fmt],lo=p.band[0],hi2=p.band[1],act=actionOf(p);
+    const d=document.createElement("div");d.className="wl-card "+p.fmt;
+    d.innerHTML='<div class="wl-top"><div><div class="wl-name">'+p.n+'</div><div class="wl-kr">'+p.kr+'</div></div>'+
+      (act?'<div style="text-align:right"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:'+act.c+'">'+act.t+'</div></div>':'')+'</div>'+
+      '<div class="wl-meta"><span class="chip '+p.fmt+'"><i></i>'+NM[p.fmt]+'</span>'+
+        (p.disc?'<span class="conf" style="background:var(--anime-bg);color:var(--anime-tx)">◆ Discovery</span>':'<span class="conf low">'+p.stat+'</span>')+'</div>'+
+      '<div style="margin-top:18px;display:grid;gap:11px">'+
+        twin("Source",p.src,c)+twin("Optionality",p.o,c)+'</div>'+
+      '<div class="opens" style="margin-top:14px">Opens <b>'+opensOf(p)+' of 3</b> · priority <b>'+fmtPriority(p).join(" › ")+'</b></div>'+
+      '<div class="wl-foot">'+p.foot+'</div>';
+    d.addEventListener("click",()=>openDetail(p));d.style.cursor="pointer";
+    grid.appendChild(d);
+  });
+  screen.appendChild(grid);
+});
+function twin(lab,v,c){return '<div class="twobar"><div class="tb-l"><span>'+lab+'</span><span class="num">'+v+'</span></div>'+
+  '<div class="tb-t"><div class="tb-f" style="width:'+v+'%;background:linear-gradient(90deg,'+c+'55,'+c+')"></div></div></div>';}
+
+/* ===== DETAIL DRAWER ===== */
+const drov=document.getElementById("drov"), drawer=document.getElementById("drawer");
+function fitBars(p){return [["drama",p.fit[0]],["anime",p.fit[2]],["film",p.fit[1]]].map(([k,v])=>
+  '<div class="fitrow'+(k===p.fmt?' route':'')+'"><span class="fl">'+NM[k]+'</span>'+
+  '<div class="ft"><div class="ff" style="width:'+v+'%;background:linear-gradient(90deg,'+COL[k]+'55,'+COL[k]+')"></div></div><span class="fv">'+v+'</span></div>').join("");}
+function openDetail(p){
+  const c=COL[p.fmt],q=quad(p),act=actionOf(p),pr=fmtPriority(p);
+  const optCalc='<div class="dr-calc">Σ(fit × audience weight) ÷ 2.55 × 100<br>= ( <b>'+p.fit[0]+'</b>×1.0 + <b>'+p.fit[2]+'</b>×0.85 + <b>'+p.fit[1]+'</b>×0.70 ) ÷ 2.55 = <b>'+p.o+'</b></div>';
+  let payoffRef;
+  if(p.kind==="adapted") payoffRef='max(global '+p.g+', Korea '+(p.nf?'— Netflix':p.d)+') = '+p.payoff;
+  else payoffRef='est. band '+p.band[0]+'–'+p.band[1]+' (mid '+p.payoff+')';
+  const statusTxt=p.kind==="adapted"?"Validation · already adapted":(p.disc?"Discovery · no screen deal yet":(p.stat||"Live call"));
+  const analysis=p.foot||(p.n+" adapted as a "+NM[p.fmt].toLowerCase()+", reaching "+(p.payoff>=70?"a large":(p.payoff>=45?"a moderate":"a modest"))+" audience"+(p.nf?" (Netflix, global)":"")+".");
+  const decision=act?'<div style="margin-top:20px;padding:16px 18px;border-radius:13px;background:'+act.b+';border:1px solid '+act.c+'40">'+
+    '<div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--tx3);text-transform:uppercase">Suggested action</div>'+
+    '<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+act.c+';margin-top:4px">'+act.t+'</div>'+
+    '<div style="font-size:12.5px;color:var(--tx3);margin-top:9px;font-family:var(--mono)">Format priority: <b style="color:var(--tx)">'+pr.join(" › ")+'</b></div></div>':'';
+  drawer.innerHTML='<div class="dr-pad"><button class="dr-close" aria-label="Close">×</button>'+
+    '<div class="dr-status">'+statusTxt+'</div>'+
+    '<div class="dr-name">'+p.n+'</div><div class="dr-kr">'+p.kr+'</div>'+
+    '<div class="dr-tags"><span class="qbadge '+q.k+'"><i></i>'+q.t+'</span><span class="chip '+p.fmt+'"><i></i>'+NM[p.fmt]+'</span></div>'+
+    '<div class="dr-osmu" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="font-family:var(--mono);font-size:13px;color:var(--tx2)">'+q.d+'</div>'+
+      '<div style="font-family:var(--mono);font-size:12px;color:var(--tx3)">Opens <b style="color:var(--tx)">'+opensOf(p)+' of 3 formats</b></div></div>'+
+    decision+
+    '<div class="dr-sec"><h4>Source strength · '+(p.comp?"public readership signals":"pre-adaptation popularity")+'</h4>'+
+      (p.comp
+        ? SRCPARTS.map((sp,i)=>'<div class="fitrow"><span class="fl" style="width:88px">'+sp[1]+'</span><div class="ft"><div class="ff" style="width:'+p.comp[i]+'%;background:linear-gradient(90deg,'+c+'55,'+c+')"></div></div><span class="fv">'+p.comp[i]+'</span></div>').join("")
+          + '<div class="dr-calc" style="margin-top:10px">Source = .40·Reach + .25·Engagement + .20·Scale + .15·Momentum = <b>'+p.src+'</b></div>'
+        : twin("Source",p.src,c))+'</div>'+
+    '<div class="dr-sec"><h4>Format fit · synopsis-derived (◄ routed)</h4>'+fitBars(p)+'</div>'+
+    '<div class="dr-sec"><h4>Optionality · index '+p.o+'</h4>'+optCalc+'</div>'+
+    '<div class="dr-sec"><h4>Payoff · reference only (weak signal)</h4><div class="dr-line"><span>'+(p.kind==="adapted"?"realized reach":"estimated")+'</span><b>'+payoffRef+'</b></div></div>'+
+    '<div class="dr-sec"><h4>Read</h4><div class="dr-analysis">'+analysis+'</div>'+(p.note?'<div class="dr-note">'+p.note+'</div>':'')+'</div>'+
+    '<div style="font-size:11.5px;color:var(--tx3);line-height:1.6;border-top:1px solid var(--line);padding-top:14px;margin-top:22px">Source &amp; optionality are <b style="color:var(--tx2)">0–100 indices for relative comparison</b> — not currency. Payoff is shown for reference only; the backtest shows it predicts <i>which format</i> well but not <i>how big</i>, so it doesn\'t drive the classification.</div></div>';
+  drawer.classList.add("open");drov.classList.add("open");drawer.setAttribute("aria-hidden","false");
+  drawer.querySelector(".dr-close").addEventListener("click",closeDetail);drawer.scrollTop=0;
+}
+function closeDetail(){drawer.classList.remove("open");drov.classList.remove("open");drawer.setAttribute("aria-hidden","true");}
+drov.addEventListener("click",closeDetail);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDetail();});
+</script>
+</body>
+</html>

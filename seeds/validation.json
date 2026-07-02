@@ -1,0 +1,16 @@
+[
+ {"n":"All of Us Are Dead","kr":"지금 우리 학교는","src":70,"g":100,"nf":true,"fit":[85,75,70],"kind":"adapted"},
+ {"n":"Moving","kr":"무빙","src":72,"g":35,"d":85,"fit":[85,78,72],"kind":"adapted"},
+ {"n":"The Uncanny Counter","kr":"경이로운 소문","src":68,"g":45,"d":85,"fit":[85,72,78],"kind":"adapted"},
+ {"n":"True Beauty","kr":"여신강림","src":82,"g":88,"d":55,"fit":[85,60,75],"kind":"adapted"},
+ {"n":"Sweet Home","kr":"스위트홈","src":80,"g":76,"nf":true,"fit":[85,78,82],"kind":"adapted"},
+ {"n":"Secretary Kim","kr":"김비서가 왜 그럴까","src":78,"g":56,"d":85,"fit":[92,75,45],"kind":"adapted"},
+ {"n":"Itaewon Class","kr":"이태원 클라쓰","src":80,"g":43,"d":85,"fit":[92,78,25],"kind":"adapted"},
+ {"n":"Hellbound","kr":"지옥","src":60,"g":65,"nf":true,"fit":[85,78,72],"kind":"adapted"},
+ {"n":"Business Proposal","kr":"사내맞선","src":72,"g":58,"d":70,"fit":[92,75,45],"kind":"adapted"},
+ {"n":"Yumi's Cells","kr":"유미의 세포들","src":70,"g":0,"d":55,"fit":[78,62,85],"kind":"adapted","note":"Live-action + CG hybrid — a case single-format routing misses."},
+ {"n":"Cheese in the Trap","kr":"치즈인더트랩","src":75,"g":4,"d":55,"fit":[85,75,65],"kind":"adapted"},
+ {"n":"Gangnam Beauty","kr":"내 ID는 강남미인","src":68,"g":19,"d":55,"fit":[85,65,45],"kind":"adapted"},
+ {"n":"D.P.","kr":"디피","src":62,"g":33,"nf":true,"fit":[85,78,45],"kind":"adapted","note":"Netflix title — domestic impact under-counted."},
+ {"n":"The Sound of Magic","kr":"안나라수마나라","src":55,"g":25,"nf":true,"fit":[78,72,75],"kind":"adapted"}
+]
