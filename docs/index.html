@@ -324,26 +324,7 @@
 <!-- THE READ -->
 <section class="block"><div class="wrap">
   <div class="sec-head"><span class="eyebrow">The Read · what the map is telling us</span><h2>Three calls from the un-adapted field</h2></div>
-  <div class="ins-grid">
-    <div class="ins a-film">
-      <div class="kick">Franchise row is already taken</div>
-      <h3>The obvious multi-format IP has moved</h3>
-      <div class="names"><span class="nm">Solo Leveling</span><span class="nm">Mount Hua</span><span class="nm">Eleceed</span></div>
-      <div class="why"><b>Why it matters:</b> nearly every franchise-grade source is already in adaptation. The one un-moved franchise-grade discovery is <b>광마회귀</b> — the scarce ACQUIRE.</div>
-    </div>
-    <div class="ins a-drama">
-      <div class="kick">Discoveries cluster in Tentpole</div>
-      <h3>Big sources, one strong format</h3>
-      <div class="names"><span class="nm"><b>검술명가</b></span><span class="nm"><b>나노마신</b></span><span class="nm"><b>템빨</b></span><span class="nm"><b>백작가의 망나니</b></span></div>
-      <div class="why"><b>Why it matters:</b> the un-adapted discoveries are big anime-route sources that carry one format well — cheaper single-bet options, not full franchises.</div>
-    </div>
-    <div class="ins a-anime">
-      <div class="kick">Format-routing edge</div>
-      <h3>Every un-adapted route points to anime</h3>
-      <div class="names"><span class="nm">action</span><span class="nm">fantasy</span><span class="nm">martial-arts</span></div>
-      <div class="why"><b>Why it matters:</b> across Franchise and Tentpole, the un-screened sources route to animation. Don't overpay for live-action rights on this material.</div>
-    </div>
-  </div>
+  <div class="ins-grid" id="insights"></div>
 </div></div></section>
 
 <!-- THE SCREEN, grouped by quadrant -->
@@ -650,6 +631,46 @@ order.forEach(([k,label])=>{
 });
 function twin(lab,v,c){return '<div class="twobar"><div class="tb-l"><span>'+lab+'</span><span class="num">'+v+'</span></div>'+
   '<div class="tb-t"><div class="tb-f" style="width:'+v+'%;background:linear-gradient(90deg,'+c+'55,'+c+')"></div></div></div>';}
+
+/* ===== THE READ : data-driven insight cards ===== */
+(function renderInsights(){
+  const box=document.getElementById("insights"); if(!box) return;
+  const fwd=DATA.filter(p=>p.kind==="forward"), disc=fwd.filter(p=>p.disc);
+  if(!fwd.length) return;
+  const NML={drama:"live-action",film:"theatrical film",anime:"animation"};
+  const QLAB={franchise:"Franchise",tentpole:"Tentpole",niche:"Niche-multi",pass:"Pass"};
+  const chips=arr=>arr.map(p=>'<span class="nm"><b>'+(p.kr||p.n)+'</b></span>').join("");
+  const topBy=(arr,n)=>[...arr].sort((a,b)=>b.src-a.src).slice(0,n);
+  // 1) routing
+  const rc={drama:0,film:0,anime:0}; fwd.forEach(p=>rc[p.fmt]++);
+  const domF=Object.keys(rc).reduce((a,b)=>rc[a]>=rc[b]?a:b);
+  // 2) franchise discoveries
+  const fran=topBy(disc.filter(p=>quad(p).k==="franchise"),4);
+  // 3) discovery clustering by quadrant
+  const qc={}; disc.forEach(p=>{const k=quad(p).k; qc[k]=(qc[k]||0)+1;});
+  const domQ=Object.keys(qc).reduce((a,b)=>(qc[a]||0)>=(qc[b]||0)?a:b);
+  const cards=[];
+  cards.push({cls:"a-"+domF,kick:"Format-routing edge",
+    h:"Most un-adapted IP routes to "+NM[domF].toLowerCase(),
+    names:chips(topBy(fwd.filter(p=>p.fmt===domF),4)),
+    why:"<b>Why it matters:</b> "+rc[domF]+" of "+fwd.length+" un-adapted titles route to "+NM[domF].toLowerCase()+" by best fit. Don't overpay for other-format rights where the value route is "+NML[domF]+"."});
+  if(fran.length) cards.push({cls:"a-film",kick:"The scarce ACQUIRE",
+    h:"Franchise-grade, still un-optioned",
+    names:chips(fran),
+    why:"<b>Why it matters:</b> "+fran.length+" discovery"+(fran.length>1?" titles":" title")+" sit in the Franchise quadrant — strong source × multi-format with no screen deal yet. The scarcest options to secure."});
+  else cards.push({cls:"a-film",kick:"Under the radar",
+    h:"Strong sources, no screen deal",names:chips(topBy(disc,4)),
+    why:"<b>Why it matters:</b> the highest-source un-adapted IP with no deal yet — the cheapest options to secure early."});
+  cards.push({cls:"a-drama",kick:"Where discoveries cluster",
+    h:"Most discoveries are "+QLAB[domQ]+" plays",
+    names:chips(topBy(disc.filter(p=>quad(p).k===domQ),4)),
+    why:"<b>Why it matters:</b> "+qc[domQ]+" of "+disc.length+" un-adapted discoveries fall in "+QLAB[domQ]+" — "+
+      (domQ==="tentpole"?"big sources with one strong format, i.e. concentrated single-format bets.":
+       domQ==="franchise"?"big sources that credibly carry several formats.":
+       domQ==="niche"?"smaller sources with broad fit — low-cost multi-format plays.":
+       "smaller, narrower sources — mostly to skip.")});
+  box.innerHTML=cards.map(c=>'<div class="ins '+c.cls+'"><div class="kick">'+c.kick+'</div><h3>'+c.h+'</h3><div class="names">'+c.names+'</div><div class="why">'+c.why+'</div></div>').join("");
+})();
 
 /* ===== DETAIL DRAWER ===== */
 const drov=document.getElementById("drov"), drawer=document.getElementById("drawer");
