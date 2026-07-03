@@ -50,6 +50,14 @@
     background:radial-gradient(120% 120% at 72% 18%,rgba(140,125,247,.12),transparent 58%),var(--surface)}
   .hero-viz canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   #heroMap{display:block;width:100%;height:100%}
+  #heroFan{display:block;width:100%;height:100%}
+  #heroEco{display:block;width:100%;height:100%}
+  .flow{animation:flow 1.5s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-28}}
+  .grow{stroke-dasharray:1 1;stroke-dashoffset:1;animation:grow 1s ease forwards}
+  @keyframes grow{to{stroke-dashoffset:0}}
+  .lede-link{display:inline-block;margin-top:16px;font-size:15px;color:var(--anime-tx);text-decoration:none;border-bottom:1px solid rgba(169,156,249,.4);padding-bottom:1px}
+  .lede-link:hover{border-bottom-color:var(--anime-tx)}
   .viz-cap{position:absolute;left:14px;top:13px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--tx2);text-transform:uppercase;background:rgba(10,12,16,.62);padding:4px 9px;border-radius:7px;border:1px solid var(--line)}
 
   section.block{padding-top:64px;padding-bottom:64px}
@@ -283,17 +291,18 @@
 <header class="hero"><div class="wrap hero-grid">
   <div class="hero-copy">
     <div class="eyebrow">OSMU Optionality Index · v0</div>
-    <h1>Every IP is a <span class="hl">different kind of bet</span></h1>
-    <p class="lede">Score the two things public data can actually measure — how strong the <b>source</b> is, and how many
-      <b>formats</b> it can carry — and each title falls into one of four opportunity types. No made-up dollar figures.
-      <a href="method.html">How it works →</a></p>
+    <h1>See an IP's options — <span class="hl">before you option it.</span></h1>
+    <p class="lede">Every story IP is really a bundle of options — the right to become a <b>drama</b>, a <b>film</b>, an
+      <b>anime</b>. This index scores that <b>optionality</b> from public signals, so every title gets the same honest
+      read — franchise, tentpole, or pass — instead of a gut call. No made-up dollar figures.</p>
+    <a class="lede-link" href="method.html">How it works →</a>
     <div class="stat-strip">
-      <div><div class="v">29</div><div class="k">IP mapped</div></div>
+      <div><div class="v" id="statTotal">—</div><div class="k">IP mapped</div></div>
       <div><div class="v">4</div><div class="k">Opportunity types</div></div>
-      <div><div class="v">10</div><div class="k">Un-adapted discoveries</div></div>
+      <div><div class="v" id="statDisc">—</div><div class="k">Un-adapted discoveries</div></div>
     </div>
   </div>
-  <div class="hero-viz"><svg id="heroMap" viewBox="0 0 480 420" aria-label="IP mapped by source strength and optionality"></svg><div class="viz-cap">Source × optionality · 29 IP</div></div>
+  <div class="hero-viz"><svg id="heroEco" viewBox="0 0 480 420" aria-label="Optionality tree: a source IP branching into format options"></svg><div class="viz-cap">Optionality · one story, many options</div></div>
 </div></header>
 
 <!-- THE FRAME -->
@@ -395,37 +404,56 @@ const NM={drama:"Drama",anime:"Anime",film:"Film"};
 const CONF={high:"High",med:"Medium",low:"Low"};
 
 /* DATA : fit=[drama,film,anime], src=source strength, kind=adapted|forward */
-/* DATA:START (pipeline replaces this block) */
+/* DATA:START (pipeline-generated — edit seeds/, not here) */
 const DATA=[
- {n:"All of Us Are Dead",kr:"지금 우리 학교는",src:70,g:100,nf:true,fit:[85,75,70],kind:"adapted"},
- {n:"Moving",kr:"무빙",src:72,g:35,d:85,fit:[85,78,72],kind:"adapted"},
- {n:"The Uncanny Counter",kr:"경이로운 소문",src:68,g:45,d:85,fit:[85,72,78],kind:"adapted"},
- {n:"True Beauty",kr:"여신강림",src:82,g:88,d:55,fit:[85,60,75],kind:"adapted"},
- {n:"Sweet Home",kr:"스위트홈",src:80,g:76,nf:true,fit:[85,78,82],kind:"adapted"},
- {n:"Secretary Kim",kr:"김비서가 왜 그럴까",src:78,g:56,d:85,fit:[92,75,45],kind:"adapted"},
- {n:"Itaewon Class",kr:"이태원 클라쓰",src:80,g:43,d:85,fit:[92,78,25],kind:"adapted"},
- {n:"Hellbound",kr:"지옥",src:60,g:65,nf:true,fit:[85,78,72],kind:"adapted"},
- {n:"Business Proposal",kr:"사내맞선",src:72,g:58,d:70,fit:[92,75,45],kind:"adapted"},
- {n:"Yumi's Cells",kr:"유미의 세포들",src:70,g:0,d:55,fit:[78,62,85],kind:"adapted",note:"Live-action + CG hybrid — a case single-format routing misses."},
- {n:"Cheese in the Trap",kr:"치즈인더트랩",src:75,g:4,d:55,fit:[85,75,65],kind:"adapted"},
- {n:"Gangnam Beauty",kr:"내 ID는 강남미인",src:68,g:19,d:55,fit:[85,65,45],kind:"adapted"},
- {n:"D.P.",kr:"디피",src:62,g:33,nf:true,fit:[85,78,45],kind:"adapted",note:"Netflix title — domestic impact under-counted."},
- {n:"The Sound of Magic",kr:"안나라수마나라",src:55,g:25,nf:true,fit:[78,72,75],kind:"adapted"},
- {n:"Solo Leveling",kr:"나 혼자만 레벨업",comp:[100,95,80,92],band:[80,98],fit:[65,72,88],kind:"forward",stat:"anime done · live-action announced",foot:"Proven global action IP — multiple options already in play."},
- {n:"Nano Machine",kr:"나노마신",comp:[85,82,80,85],band:[58,82],fit:[66,66,90],kind:"forward",disc:true,foot:"Surging Naver murim-SF hit — high momentum, clean anime route, no deal yet."},
- {n:"Return of the Mount Hua Sect",kr:"화산귀환",comp:[92,72,98,48],band:[60,82],fit:[75,68,85],kind:"forward",stat:"anime in production",foot:"Huge source (~700M novel views) but momentum past peak — ratings & readers declining."},
- {n:"Lookism",kr:"외모지상주의",comp:[90,70,85,78],band:[50,74],fit:[75,65,80],kind:"forward",stat:"anime airing",foot:"Global Naver hit; dual-body premise needs animation."},
- {n:"The Youngest Son of a Swordsmanship Family",kr:"검술명가 막내아들",comp:[82,78,88,72],band:[62,86],fit:[62,70,90],kind:"forward",disc:true,foot:"KakaoPage mega-hit (1,100+ ch). Strong single-format anime route."},
- {n:"The Remarried Empress",kr:"재혼황후",comp:[85,82,70,78],band:[68,90],fit:[92,72,78],kind:"forward",stat:"drama in the works",foot:"Palace fantasy carrying drama, film and anime — rare 3-format breadth."},
- {n:"Overgeared",kr:"템빨",comp:[82,76,92,68],band:[55,80],fit:[55,68,88],kind:"forward",disc:true,foot:"Long-running VR-gaming fantasy with a deep world — natural anime candidate."},
- {n:"Eleceed",kr:"일렉시드",comp:[80,82,78,82],band:[54,80],fit:[62,75,90],kind:"forward",stat:"anime airing",foot:"Fast superpower action; top anime fit."},
- {n:"Reformation of the Deadbeat Noble",kr:"광마회귀",comp:[80,78,82,70],band:[58,82],fit:[68,68,88],kind:"forward",disc:true,foot:"Franchise-grade martial-arts source with no screen deal yet — anime-led."},
- {n:"The Greatest Estate Designer",kr:"역대급 영지 설계사",comp:[74,80,70,82],band:[52,76],fit:[72,62,82],kind:"forward",disc:true,foot:"Rising strategy-fantasy with strong buzz — anime or light drama."},
- {n:"Trash of the Count's Family",kr:"백작가의 망나니가 되었다",comp:[76,74,80,66],band:[56,80],fit:[62,68,86],kind:"forward",disc:true,foot:"Redice action-fantasy hit — clean single-format anime candidate."},
- {n:"SSS-Class Suicide Hunter",kr:"SSS급 죽어야 사는 헌터",comp:[76,74,68,72],band:[54,78],fit:[70,72,85],kind:"forward",disc:true,foot:"Dark hunter premise, broad fit — a low-cost multi-format experiment."},
- {n:"Mercenary Enrollment",kr:"입학용병",comp:[76,74,72,70],band:[55,80],fit:[78,72,82],kind:"forward",disc:true,foot:"Naver action hit with drama crossover — broad but mid-size source."},
- {n:"The Villainess Is a Marionette",kr:"악녀는 마리오네트",comp:[72,78,62,66],band:[48,74],fit:[85,60,78],kind:"forward",disc:true,foot:"Romance-fantasy villainess — the rare drama-led discovery."},
- {n:"The Debut or Die",kr:"데뷔 못 하면 죽는 병",comp:[72,78,65,70],band:[50,74],fit:[88,65,60],kind:"forward",disc:true,foot:"Idol-survival web-novel — non-anime call; drama / K-pop route."},
+  {"n": "Solo Leveling", "kr": "나 혼자만 레벨업", "kind": "forward", "comp": [100, 95, 80, 92], "fit": [65, 72, 88], "band": [80, 98], "foot": "Proven global action IP — multiple options already in play.", "stat": "anime done · live-action announced", "src": 94, "o": 75},
+  {"n": "Nano Machine", "kr": "나노마신", "kind": "forward", "comp": [85, 82, 80, 85], "fit": [66, 66, 90], "band": [58, 82], "foot": "Surging murim-SF hit; clean anime route, no deal yet.", "disc": true, "src": 83, "o": 74},
+  {"n": "Return of the Mount Hua Sect", "kr": "화산귀환", "kind": "forward", "comp": [92, 72, 98, 48], "fit": [75, 68, 85], "band": [60, 82], "foot": "Huge source but momentum past peak — ratings and readers declining.", "stat": "anime in production", "src": 82, "o": 76},
+  {"n": "Lookism", "kr": "외모지상주의", "kind": "forward", "comp": [90, 70, 85, 78], "fit": [75, 65, 80], "band": [50, 74], "foot": "Global Naver hit; dual-body premise needs animation.", "stat": "anime airing", "src": 82, "o": 74},
+  {"n": "The Youngest Son of a Swordsmanship Family", "kr": "검술명가 막내아들", "kind": "forward", "comp": [82, 78, 88, 72], "fit": [62, 70, 90], "band": [62, 86], "foot": "KakaoPage mega-hit; strong single-format anime route.", "disc": true, "src": 81, "o": 74},
+  {"n": "The Remarried Empress", "kr": "재혼황후", "kind": "forward", "comp": [85, 82, 70, 78], "fit": [92, 72, 78], "band": [68, 90], "foot": "Palace fantasy carrying drama, film and anime — rare 3-format breadth.", "stat": "drama in the works", "src": 80, "o": 82},
+  {"n": "Overgeared", "kr": "템빨", "kind": "forward", "comp": [82, 76, 92, 68], "fit": [55, 68, 88], "band": [55, 80], "foot": "Long-running VR-gaming fantasy with a deep world — natural anime candidate.", "disc": true, "src": 80, "o": 70},
+  {"n": "Eleceed", "kr": "일렉시드", "kind": "forward", "comp": [80, 82, 78, 82], "fit": [62, 75, 90], "band": [54, 80], "foot": "Fast superpower action; top anime fit.", "stat": "anime airing", "src": 80, "o": 75},
+  {"n": "Reformation of the Deadbeat Noble", "kr": "광마회귀", "kind": "forward", "comp": [80, 78, 82, 70], "fit": [68, 68, 88], "band": [58, 82], "foot": "Franchise-grade martial-arts source with no screen deal yet.", "disc": true, "src": 78, "o": 75},
+  {"n": "The Greatest Estate Designer", "kr": "역대급 영지 설계사", "kind": "forward", "comp": [74, 80, 70, 82], "fit": [72, 62, 82], "band": [52, 76], "foot": "Rising strategy-fantasy with strong buzz.", "disc": true, "src": 76, "o": 73},
+  {"n": "Trash of the Count's Family", "kr": "백작가의 망나니가 되었다", "kind": "forward", "comp": [76, 74, 80, 66], "fit": [62, 68, 86], "band": [56, 80], "foot": "Redice action-fantasy hit — clean single-format anime candidate.", "disc": true, "src": 75, "o": 72},
+  {"n": "SSS-Class Suicide Hunter", "kr": "SSS급 죽어야 사는 헌터", "kind": "forward", "comp": [76, 74, 68, 72], "fit": [70, 72, 85], "band": [54, 78], "foot": "Dark hunter premise, broad fit — low-cost multi-format experiment.", "disc": true, "src": 73, "o": 76},
+  {"n": "Mercenary Enrollment", "kr": "입학용병", "kind": "forward", "comp": [76, 74, 72, 70], "fit": [78, 72, 82], "band": [55, 80], "foot": "Naver action hit with drama crossover.", "disc": true, "src": 74, "o": 78},
+  {"n": "The Villainess Is a Marionette", "kr": "악녀는 마리오네트", "kind": "forward", "comp": [72, 78, 62, 66], "fit": [85, 60, 78], "band": [48, 74], "foot": "Romance-fantasy villainess — the rare drama-led discovery.", "disc": true, "src": 71, "o": 76},
+  {"n": "The Debut or Die", "kr": "데뷔 못 하면 죽는 병", "kind": "forward", "comp": [72, 78, 65, 70], "fit": [88, 65, 60], "band": [50, 74], "foot": "Idol-survival web-novel — non-anime call; drama / K-pop route.", "disc": true, "src": 72, "o": 72},
+  {"n": "Pick Me Up", "kr": "픽 미 업!", "kind": "forward", "comp": [78, 82, 70, 80], "fit": [60, 68, 88], "band": [52, 78], "foot": "KakaoPage #1 fantasy 2025 — fast-action gacha premise, anime route.", "disc": true, "src": 78, "o": 72},
+  {"n": "Red Storm", "kr": "레드스톰", "kind": "forward", "comp": [70, 70, 88, 55], "fit": [65, 70, 85], "band": [50, 76], "foot": "Long-running action staple; anime candidate.", "disc": true, "src": 71, "o": 73},
+  {"n": "Salaryman Ghost Story", "kr": "괴담에 떨어져도 출근을 해야 하는구나", "kind": "forward", "comp": [76, 82, 55, 90], "fit": [80, 72, 70], "band": [50, 76], "foot": "2025 KakaoPage breakout — modern-fantasy horror-comedy; drama/anime.", "disc": true, "src": 75, "o": 74},
+  {"n": "This Life I Will Be the Family Head", "kr": "이번 생은 가주가 되겠습니다", "kind": "forward", "comp": [74, 78, 72, 70], "fit": [85, 60, 75], "band": [48, 74], "foot": "Popular rofan; drama or anime.", "disc": true, "src": 74, "o": 75},
+  {"n": "Under the Oak Tree", "kr": "상수리나무 아래", "kind": "forward", "comp": [80, 85, 65, 72], "fit": [88, 62, 72], "band": [55, 80], "foot": "Rofan mega-hit; strong drama potential.", "disc": true, "src": 77, "o": 76},
+  {"n": "Solo Max-Level Newbie", "kr": "나 혼자 만렙 뉴비", "kind": "forward", "comp": [74, 74, 72, 68], "fit": [60, 68, 86], "band": [52, 78], "foot": "Game-fantasy hit; anime route.", "disc": true, "src": 73, "o": 71},
+  {"n": "Beware the Villainess", "kr": "그 악녀를 조심하세요", "kind": "forward", "comp": [74, 80, 70, 66], "fit": [82, 60, 76], "band": [48, 74], "foot": "Beloved comedic rofan; drama/anime.", "disc": true, "src": 74, "o": 74},
+  {"n": "The Tutorial Is Too Hard", "kr": "튜토리얼이 너무 어렵다", "kind": "forward", "comp": [72, 74, 72, 62], "fit": [62, 70, 86], "band": [50, 76], "foot": "Hardcore tower-climbing action; anime route.", "disc": true, "src": 71, "o": 72},
+  {"n": "Death Is the Only Ending for the Villainess", "kr": "악역의 엔딩은 죽음뿐", "kind": "forward", "comp": [80, 82, 72, 68], "fit": [85, 60, 78], "band": [50, 76], "foot": "Huge rofan IP; drama/anime.", "disc": true, "src": 77, "o": 76},
+  {"n": "Manager Kim", "kr": "김부장", "kind": "forward", "comp": [78, 76, 82, 72], "fit": [75, 72, 68], "band": [48, 74], "foot": "Action-revenge hit with adult drama appeal.", "disc": true, "src": 77, "o": 72},
+  {"n": "Tomb Raider King", "kr": "도굴왕", "kind": "forward", "comp": [84, 80, 80, 70], "fit": [68, 74, 82], "band": [54, 80], "foot": "Action-adventure Naver hit; anime or film route.", "disc": true, "src": 80, "o": 74},
+  {"n": "Legendary Moonlight Sculptor", "kr": "달빛조각사", "kind": "forward", "comp": [80, 80, 85, 58], "fit": [58, 66, 86], "band": [52, 78], "foot": "Landmark game-fantasy source; anime route.", "disc": true, "src": 78, "o": 70},
+  {"n": "Mookhyang: Dark Lady", "kr": "묵향 다크레이디", "kind": "forward", "comp": [70, 75, 82, 58], "fit": [70, 66, 84], "band": [48, 74], "foot": "Long-running martial-fantasy with a female lead; anime.", "disc": true, "src": 72, "o": 74},
+  {"n": "The Bystander", "kr": "구경하는 들러리양", "kind": "forward", "comp": [74, 80, 66, 68], "fit": [82, 60, 80], "band": [48, 74], "foot": "Comedic rofan with strong word-of-mouth; drama/anime.", "disc": true, "src": 73, "o": 75},
+  {"n": "A Practical Guide to Love", "kr": "바른연애 길잡이", "kind": "forward", "comp": [74, 80, 72, 64], "fit": [88, 66, 70], "band": [50, 76], "foot": "College romance / slice-of-life; a clean drama-route pick.", "disc": true, "src": 74, "o": 76},
+  {"n": "Money Game", "kr": "머니게임", "kind": "forward", "comp": [80, 85, 60, 72], "fit": [86, 82, 55], "band": [55, 82], "foot": "Viral survival thriller; strong drama/film route.", "disc": true, "src": 76, "o": 75},
+  {"n": "Garbage Time", "kr": "가비지타임", "kind": "forward", "comp": [80, 86, 78, 78], "fit": [84, 72, 70], "band": [52, 80], "foot": "Beloved sports drama with a fervent fandom; drama route.", "disc": true, "src": 81, "o": 76},
+  {"n": "Odd Girl Out", "kr": "소녀의 세계", "kind": "forward", "comp": [74, 80, 80, 62], "fit": [85, 68, 74], "band": [48, 74], "foot": "Slice-of-life romance; long-running, drama route.", "disc": true, "src": 75, "o": 77},
+  {"n": "Jungle Juice", "kr": "정글쥬스", "kind": "forward", "comp": [74, 74, 66, 66], "fit": [62, 70, 86], "band": [50, 76], "foot": "Creature-action premise suited to animation.", "disc": true, "src": 71, "o": 72},
+  {"n": "All of Us Are Dead", "kr": "지금 우리 학교는", "src": 70, "g": 100, "nf": true, "fit": [85, 75, 70], "kind": "adapted", "o": 77},
+  {"n": "Moving", "kr": "무빙", "src": 72, "g": 35, "d": 85, "fit": [85, 78, 72], "kind": "adapted", "o": 79},
+  {"n": "The Uncanny Counter", "kr": "경이로운 소문", "src": 68, "g": 45, "d": 85, "fit": [85, 72, 78], "kind": "adapted", "o": 79},
+  {"n": "True Beauty", "kr": "여신강림", "src": 82, "g": 88, "d": 55, "fit": [85, 60, 75], "kind": "adapted", "o": 75},
+  {"n": "Sweet Home", "kr": "스위트홈", "src": 80, "g": 76, "nf": true, "fit": [85, 78, 82], "kind": "adapted", "o": 82},
+  {"n": "Secretary Kim", "kr": "김비서가 왜 그럴까", "src": 78, "g": 56, "d": 85, "fit": [92, 75, 45], "kind": "adapted", "o": 72},
+  {"n": "Itaewon Class", "kr": "이태원 클라쓰", "src": 80, "g": 43, "d": 85, "fit": [92, 78, 25], "kind": "adapted", "o": 66},
+  {"n": "Hellbound", "kr": "지옥", "src": 60, "g": 65, "nf": true, "fit": [85, 78, 72], "kind": "adapted", "o": 79},
+  {"n": "Business Proposal", "kr": "사내맞선", "src": 72, "g": 58, "d": 70, "fit": [92, 75, 45], "kind": "adapted", "o": 72},
+  {"n": "Yumi's Cells", "kr": "유미의 세포들", "src": 70, "g": 0, "d": 55, "fit": [78, 62, 85], "kind": "adapted", "note": "Live-action + CG hybrid — a case single-format routing misses.", "o": 76},
+  {"n": "Cheese in the Trap", "kr": "치즈인더트랩", "src": 75, "g": 4, "d": 55, "fit": [85, 75, 65], "kind": "adapted", "o": 76},
+  {"n": "Gangnam Beauty", "kr": "내 ID는 강남미인", "src": 68, "g": 19, "d": 55, "fit": [85, 65, 45], "kind": "adapted", "o": 66},
+  {"n": "D.P.", "kr": "디피", "src": 62, "g": 33, "nf": true, "fit": [85, 78, 45], "kind": "adapted", "note": "Netflix title — domestic impact under-counted.", "o": 70},
+  {"n": "The Sound of Magic", "kr": "안나라수마나라", "src": 55, "g": 25, "nf": true, "fit": [78, 72, 75], "kind": "adapted", "o": 75},
 ];
 /* DATA:END */
 
@@ -527,16 +555,53 @@ document.querySelectorAll(".filters button").forEach(b=>{
     document.querySelectorAll(".pt").forEach(g=>g.classList.toggle("dim",f!=="all"&&g.dataset.fmt!==f));hideLabel();});
 });
 
-/* ===== HERO MINI-MAP ===== */
+/* ===== HERO STATS (dynamic) ===== */
 (function(){
-  const hs=document.getElementById("heroMap"); if(!hs) return;
-  const Wh=480,Hh=420,pl=44,pr=26,pt=26,pb=42;
-  const {xx,yy}=drawField(hs,Wh,Hh,pl,pr,pt,pb,true);
-  DATA.forEach(p=>{const x=xx(p.src),y=yy(p.o),c=COL[p.fmt];
-    if(p.kind==="forward") hs.appendChild(E("circle",{cx:x,cy:y,r:5.5,fill:"var(--bg)",stroke:c,"stroke-width":2,style:"filter:drop-shadow(0 0 4px "+c+"aa)"}));
-    else hs.appendChild(E("circle",{cx:x,cy:y,r:4.5,fill:c,"fill-opacity":.85,style:"filter:drop-shadow(0 0 3px "+c+"66)"}));});
-  const cx=E("text",{x:pl+(Wh-pl-pr)/2,y:Hh-10,class:"axcap","text-anchor":"middle"});cx.setAttribute("font-size","10");cx.textContent="SOURCE →";hs.appendChild(cx);
-  const cy=E("text",{class:"axcap","text-anchor":"middle"});cy.setAttribute("font-size","10");cy.setAttribute("transform","translate(14,"+(pt+(Hh-pt-pb)/2)+") rotate(-90)");cy.textContent="OPTIONALITY →";hs.appendChild(cy);
+  const total=DATA.length, disc=DATA.filter(p=>p.disc).length;
+  const st=document.getElementById("statTotal"), sd=document.getElementById("statDisc");
+  if(st) st.textContent=total; if(sd) sd.textContent=disc;
+})();
+
+/* ===== HERO GRAPHIC: the optionality tree (real-options branching) ===== */
+(function(){
+  const hs=document.getElementById("heroEco"); if(!hs) return;
+  const reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const C={drama:"#F09B4E",film:"#22C0AC",anime:"#8C7DF7"};
+  const root={x:60,y:210};
+  // level 1 = the three format options; level 2 = further options each one opens
+  const L1=[
+    {lab:"Drama",c:C.drama,x:236,y:96},
+    {lab:"Film", c:C.film, x:236,y:210},
+    {lab:"Anime",c:C.anime,x:236,y:324},
+  ];
+  const kids={0:[60,132],1:[176,244],2:[292,356]}; // level-2 leaf y's per format
+  const curve=(px,py,cx,cy)=>{const dx=(cx-px)*0.5;return `M ${px} ${py} C ${px+dx} ${py} ${cx-dx} ${cy} ${cx} ${cy}`;};
+  const branch=(d,col,w,delay)=>{const p=E("path",{d:d,fill:"none",stroke:col,"stroke-width":w,"stroke-linecap":"round",opacity:.6,style:"filter:drop-shadow(0 0 5px "+col+"66)"});
+    if(!reduce){p.setAttribute("class","grow");p.setAttribute("pathLength","1");p.style.animationDelay=delay+"s";} hs.appendChild(p);return p;};
+  const dot=(x,y,r,col,fill,delay)=>{const c=E("circle",{cx:x,cy:y,r:r,fill:fill||"var(--bg)",stroke:col,"stroke-width":2,style:"filter:drop-shadow(0 0 6px "+col+"aa)"});
+    if(!reduce){c.style.opacity=0;c.animate([{opacity:0},{opacity:1}],{duration:300,delay:delay*1000,fill:"forwards"});} hs.appendChild(c);};
+  // main branches: root -> each format
+  L1.forEach((t,i)=>branch(curve(root.x,root.y,t.x,t.y),t.c,4,0.15*i));
+  // sub branches: each format -> its two further options (organic, thinner)
+  L1.forEach((t,i)=>{kids[i].forEach((ky,j)=>branch(curve(t.x,t.y,404,ky),t.c,2,0.5+0.15*i+0.08*j));});
+  // leaves (level 2)
+  L1.forEach((t,i)=>kids[i].forEach((ky,j)=>dot(404,ky,4.5,t.c,t.c,0.8+0.15*i)));
+  // format nodes (level 1) + labels
+  L1.forEach((t,i)=>{
+    dot(t.x,t.y,10,t.c,"var(--bg)",0.4+0.15*i);
+    const nm=E("text",{x:t.x,y:t.y- (i===0?18:0) - (i===0?0:0),"text-anchor":"middle",fill:"#E9ECF0","font-family":"var(--sans)","font-size":"14.5","font-weight":"700"});
+    // place label: above for top, below for bottom, above for middle
+    nm.setAttribute("y", i===0? t.y-18 : i===2? t.y+26 : t.y-18);
+    nm.textContent=t.lab; hs.appendChild(nm);
+  });
+  // root node
+  hs.appendChild(E("circle",{cx:root.x,cy:root.y,r:26,fill:"var(--surface)",stroke:"var(--line2)","stroke-width":1.5}));
+  hs.appendChild(E("circle",{cx:root.x,cy:root.y,r:26,fill:"none",stroke:"#E9ECF0","stroke-width":1.3,opacity:.45}));
+  const s1=E("text",{x:root.x,y:root.y-1,"text-anchor":"middle",fill:"#E9ECF0","font-family":"var(--mono)","font-size":"11","font-weight":"600"});s1.textContent="SOURCE";hs.appendChild(s1);
+  const s2=E("text",{x:root.x,y:root.y+12,"text-anchor":"middle",fill:"var(--tx3)","font-family":"var(--mono)","font-size":"7.5"});s2.textContent="IP";hs.appendChild(s2);
+  // caption
+  const ft=E("text",{x:240,y:404,"text-anchor":"middle",fill:"var(--tx3)","font-family":"var(--mono)","font-size":"9.5"});
+  ft.textContent="each story holds the option to become many things";hs.appendChild(ft);
 })();
 
 /* ===== TABLE ===== */
