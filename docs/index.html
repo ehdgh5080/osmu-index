@@ -68,6 +68,24 @@
   /* INSIGHTS */
   .insights{background:var(--surface);border-bottom:1px solid var(--line);border-top:1px solid var(--line)}
   .ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+  /* findings */
+  .finding{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+  .finding .fnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--anime-tx);border:1px solid var(--line2);border-radius:8px;padding:4px 9px;line-height:1}
+  .finding.lead{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px 30px;margin-top:28px}
+  .finding .fbody h3{font-size:20px;letter-spacing:-.02em;margin-bottom:10px;line-height:1.15}
+  .finding .fbody p{color:var(--tx2);font-size:15px;line-height:1.6;max-width:66ch}
+  .finding .fbody p b{color:var(--tx)}
+  .fso{margin-top:12px}
+  .so{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--drama-tx);margin-right:8px}
+  .find-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .find-grid .finding{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 26px}
+  .fnames{display:block;margin-top:9px;font-family:var(--mono);font-size:11.5px;color:var(--tx3)}
+  .fbars{margin:18px 0 6px;display:flex;flex-direction:column;gap:9px}
+  .fbar-row{display:grid;grid-template-columns:118px 1fr;gap:12px;align-items:center}
+  .fbar-lab{font-family:var(--mono);font-size:11px;color:var(--tx3);text-align:right}
+  .fbar{display:flex;height:22px;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+  .fseg{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;color:#0A0C10;min-width:0}
+  @media(max-width:760px){.find-grid{grid-template-columns:1fr}.finding.lead{padding:22px}}
   .ins{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden;transition:border-color .18s,transform .18s}
   .ins:hover{border-color:var(--line2);transform:translateY(-2px)}
   .ins::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
@@ -323,8 +341,36 @@
 
 <!-- THE READ -->
 <section class="block"><div class="wrap">
-  <div class="sec-head"><span class="eyebrow">The Read · what the map is telling us</span><h2>Three calls from the un-adapted field</h2></div>
-  <div class="ins-grid" id="insights"></div>
+  <div class="sec-head"><span class="eyebrow">Findings · what the data argues</span><h2>Three things the un-adapted field is telling us</h2></div>
+
+  <div class="finding lead">
+    <div class="fnum">01</div>
+    <div class="fbody">
+      <h3>The next wave won't look like the last one</h3>
+      <p>Nearly every Korean IP that has <b>already</b> been adapted became a live-action drama — <span id="fAdp">—</span> in the backtest set. But the <b>un-adapted</b> field routes <span id="fFwd">—</span> of its titles to <b>animation</b> by best format fit. The back catalogue and the frontier point in opposite directions.</p>
+      <div class="fbars" id="fBars"></div>
+      <p class="fso"><span class="so">So what</span>A large stock of animation-suited source IP is sitting un-optioned while buyers keep chasing live-action rights. Shop only the drama lane and you're bidding in the crowded one.</p>
+    </div>
+  </div>
+
+  <div class="find-grid">
+    <div class="finding">
+      <div class="fnum">02</div>
+      <div class="fbody">
+        <h3>The franchises are already gone</h3>
+        <p>Only <span id="fFran">—</span> of <span id="fDisc">—</span> un-optioned discoveries are franchise-grade — a strong source that credibly carries several formats. The rest are mostly single-format <b>tentpoles</b>.<span class="fnames" id="fFranNames"></span></p>
+        <p class="fso"><span class="so">So what</span>Don't wait for the next franchise on the open market — it's taken. The value left is in single-format bets priced below franchises.</p>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="fnum">03</div>
+      <div class="fbody">
+        <h3>Big is not the same as rising</h3>
+        <p>Raw size overstates value. <b>Mount Hua Sect</b> sits in the top tier on reach and scale (~700M views, 1,900+ chapters), but its momentum has rolled over — so the index marks its source score down, below titles a fraction its size.</p>
+        <p class="fso"><span class="so">So what</span>A headline view-count is a trailing indicator. The momentum term is what keeps the index from overpaying for yesterday's hit.</p>
+      </div>
+    </div>
+  </div>
 </div></div></section>
 
 <!-- THE SCREEN, grouped by quadrant -->
@@ -632,44 +678,36 @@ order.forEach(([k,label])=>{
 function twin(lab,v,c){return '<div class="twobar"><div class="tb-l"><span>'+lab+'</span><span class="num">'+v+'</span></div>'+
   '<div class="tb-t"><div class="tb-f" style="width:'+v+'%;background:linear-gradient(90deg,'+c+'55,'+c+')"></div></div></div>';}
 
-/* ===== THE READ : data-driven insight cards ===== */
-(function renderInsights(){
-  const box=document.getElementById("insights"); if(!box) return;
-  const fwd=DATA.filter(p=>p.kind==="forward"), disc=fwd.filter(p=>p.disc);
+/* ===== FINDINGS : live figures + routing comparison bars ===== */
+(function renderFindings(){
+  const fwd=DATA.filter(p=>p.kind==="forward"), adp=DATA.filter(p=>p.kind==="adapted"), disc=fwd.filter(p=>p.disc);
   if(!fwd.length) return;
-  const NML={drama:"live-action",film:"theatrical film",anime:"animation"};
-  const QLAB={franchise:"Franchise",tentpole:"Tentpole",niche:"Niche-multi",pass:"Pass"};
-  const chips=arr=>arr.map(p=>'<span class="nm"><b>'+(p.kr||p.n)+'</b></span>').join("");
-  const topBy=(arr,n)=>[...arr].sort((a,b)=>b.src-a.src).slice(0,n);
-  // 1) routing
-  const rc={drama:0,film:0,anime:0}; fwd.forEach(p=>rc[p.fmt]++);
-  const domF=Object.keys(rc).reduce((a,b)=>rc[a]>=rc[b]?a:b);
-  // 2) franchise discoveries
-  const fran=topBy(disc.filter(p=>quad(p).k==="franchise"),4);
-  // 3) discovery clustering by quadrant
-  const qc={}; disc.forEach(p=>{const k=quad(p).k; qc[k]=(qc[k]||0)+1;});
-  const domQ=Object.keys(qc).reduce((a,b)=>(qc[a]||0)>=(qc[b]||0)?a:b);
-  const cards=[];
-  cards.push({cls:"a-"+domF,kick:"Format-routing edge",
-    h:"Most un-adapted IP routes to "+NM[domF].toLowerCase(),
-    names:chips(topBy(fwd.filter(p=>p.fmt===domF),4)),
-    why:"<b>Why it matters:</b> "+rc[domF]+" of "+fwd.length+" un-adapted titles route to "+NM[domF].toLowerCase()+" by best fit. Don't overpay for other-format rights where the value route is "+NML[domF]+"."});
-  if(fran.length) cards.push({cls:"a-film",kick:"The scarce ACQUIRE",
-    h:"Franchise-grade, still un-optioned",
-    names:chips(fran),
-    why:"<b>Why it matters:</b> "+fran.length+" discovery"+(fran.length>1?" titles":" title")+" sit in the Franchise quadrant — strong source × multi-format with no screen deal yet. The scarcest options to secure."});
-  else cards.push({cls:"a-film",kick:"Under the radar",
-    h:"Strong sources, no screen deal",names:chips(topBy(disc,4)),
-    why:"<b>Why it matters:</b> the highest-source un-adapted IP with no deal yet — the cheapest options to secure early."});
-  cards.push({cls:"a-drama",kick:"Where discoveries cluster",
-    h:"Most discoveries are "+QLAB[domQ]+" plays",
-    names:chips(topBy(disc.filter(p=>quad(p).k===domQ),4)),
-    why:"<b>Why it matters:</b> "+qc[domQ]+" of "+disc.length+" un-adapted discoveries fall in "+QLAB[domQ]+" — "+
-      (domQ==="tentpole"?"big sources with one strong format, i.e. concentrated single-format bets.":
-       domQ==="franchise"?"big sources that credibly carry several formats.":
-       domQ==="niche"?"smaller sources with broad fit — low-cost multi-format plays.":
-       "smaller, narrower sources — mostly to skip.")});
-  box.innerHTML=cards.map(c=>'<div class="ins '+c.cls+'"><div class="kick">'+c.kick+'</div><h3>'+c.h+'</h3><div class="names">'+c.names+'</div><div class="why">'+c.why+'</div></div>').join("");
+  const primary=t=>["drama","film","anime"][t.fit.indexOf(Math.max(...t.fit))];
+  const cnt=arr=>{const c={drama:0,film:0,anime:0};arr.forEach(t=>c[primary(t)]++);return c;};
+  const cA=cnt(adp), cF=cnt(fwd);
+  const setT=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  setT("fAdp", cA.drama+" of "+adp.length);
+  setT("fFwd", Math.round(cF.anime/fwd.length*100)+"%");
+  // franchise scarcity
+  const fran=disc.filter(p=>quad(p).k==="franchise").sort((a,b)=>b.src-a.src);
+  setT("fFran", fran.length); setT("fDisc", disc.length);
+  const fn=document.getElementById("fFranNames");
+  if(fn && fran.length) fn.textContent="Left in the open: "+fran.slice(0,5).map(p=>p.kr||p.n).join(" · ");
+  // comparison bars
+  const box=document.getElementById("fBars");
+  function bar(lab,c,n){
+    const row=document.createElement("div");row.className="fbar-row";
+    const l=document.createElement("div");l.className="fbar-lab";l.textContent=lab;row.appendChild(l);
+    const b=document.createElement("div");b.className="fbar";
+    [["drama",COL.drama],["film",COL.film],["anime",COL.anime]].forEach(([k,col])=>{
+      const p=c[k]/n*100; if(p<=0)return;
+      const seg=document.createElement("div");seg.className="fseg";seg.style.background=col;seg.style.width=p+"%";
+      seg.textContent=p>=15?NM[k]+" "+Math.round(p)+"%":(p>=8?Math.round(p)+"%":"");
+      b.appendChild(seg);
+    });
+    row.appendChild(b);return row;
+  }
+  if(box){box.appendChild(bar("Already adapted",cA,adp.length)); box.appendChild(bar("Un-adapted field",cF,fwd.length));}
 })();
 
 /* ===== DETAIL DRAWER ===== */
