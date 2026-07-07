@@ -326,9 +326,52 @@
 <section class="block mblock" style="border-top:1px solid var(--line)"><div class="wrap">
   <div class="eyebrow">Validation &amp; honest limits</div>
   <h2 style="margin-top:10px">Why it holds up — and where it stops</h2>
+  <style>
+    .mlead{font-size:16px;color:var(--tx2);line-height:1.6;max-width:60em;margin-top:8px}.mlead b{color:var(--tx)}
+    .bt-wrap{margin:24px 0 8px;border:1px solid var(--line2);border-radius:14px;overflow:hidden}
+    .bt-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--raise);font-family:var(--mono);font-size:12px;color:var(--tx2);letter-spacing:.04em}
+    .bt-score{color:#3FB950;font-weight:600}
+    table.bt{width:100%;border-collapse:collapse;font-size:13px}
+    table.bt th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);font-weight:500;padding:10px 16px;border-bottom:1px solid var(--line)}
+    table.bt td{padding:9px 16px;border-bottom:1px solid var(--line);color:var(--tx);vertical-align:middle}
+    table.bt tr:last-child td{border-bottom:none}
+    table.bt tr.miss td{background:var(--drama-bg)}
+    .fchip{font-family:var(--mono);font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;white-space:nowrap}
+    .fchip.d{color:var(--drama-tx);background:var(--drama-bg)} .fchip.a{color:var(--anime-tx);background:var(--anime-bg)}
+    .fitm{font-family:var(--mono);font-size:11px;color:var(--tx3)}
+    .res{font-family:var(--mono);font-weight:700} .res.ok{color:#3FB950} .res.miss{color:var(--drama-tx)}
+    .bt-note{border-left:3px solid var(--drama);background:var(--drama-bg);padding:14px 18px;border-radius:0 10px 10px 0;margin:16px 0 36px;font-size:14px;color:var(--tx2);line-height:1.62}.bt-note b{color:var(--tx)}
+    @media(max-width:620px){table.bt .hide{display:none}}
+  </style>
+  <p class="mlead">Format fit is scored by an AI <b>from the synopsis alone — no genre label</b>, so it cannot echo the answer. Run against the 14 titles that have actually been adapted, the model's top-ranked format matches the real one <b>13 times</b>.</p>
+
+  <div class="bt-wrap">
+    <div class="bt-head"><span>BACKTEST · PREDICTED FORMAT vs. ACTUAL ADAPTATION</span><span class="bt-score">13 / 14 correct</span></div>
+    <table class="bt">
+      <thead><tr><th>Source IP</th><th>Model pick</th><th class="hide">Fit · D/F/A</th><th>What it became</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td class="ip">Itaewon Class</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">92 / 78 / 25</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">Business Proposal</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">92 / 75 / 45</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">What's Wrong with Secretary Kim</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">92 / 75 / 45</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">Sweet Home</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 78 / 82</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">Hellbound</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 78 / 72</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">Moving</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 78 / 72</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">D.P.</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 78 / 45</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">All of Us Are Dead</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 75 / 70</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">The Uncanny Counter</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 72 / 78</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">Cheese in the Trap</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 75 / 65</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">My ID is Gangnam Beauty</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 65 / 45</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">True Beauty</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">85 / 60 / 75</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr><td class="ip">The Sound of Magic</td><td><span class="fchip d">Drama</span></td><td class="hide fitm">78 / 72 / 75</td><td>Live-action drama</td><td class="res ok">✓</td></tr>
+        <tr class="miss"><td class="ip">Yumi's Cells</td><td><span class="fchip a">Anime</span></td><td class="hide fitm">78 / 62 / 85</td><td>Live-action + animation</td><td class="res miss">✗</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bt-note"><b>Read this honestly.</b> Korean webtoon adaptations are overwhelmingly live-action drama, so "guess drama" is already a strong baseline — a high hit-rate on its own is not the achievement. What the test actually shows is two things. First, the fit <i>scores</i> separate a lock (Itaewon Class, drama 92) from a coin-flip. Second, the model flags the exception: on <b>Yumi's Cells</b> — the one miss — it ranked <b>anime</b> highest, and the real series was a live-action / 3D-animation hybrid built around animated "cells." It missed the label but caught the signal that made the title unusual. That is the behaviour you want from an optionality lens, not a genre classifier.</div>
+
   <div class="meth-grid">
     <div class="meth">
-      <p>Format fit is judged by an AI <b>from the synopsis alone, no genre label</b>, so it can't echo the answer. On the adapted set it recovers the real format <b>18 of 20 times</b> — a non-circular check that the optionality axis is measuring something real.</p>
       <h3>Why payoff is not an axis</h3>
       <p>An earlier version multiplied in a <b>payoff</b> estimate. In testing, fit predicts payoff at only <b>Spearman ρ ≈ 0.62</b>, and that is almost all floor-separation: low-fit titles reliably flop, but the top-fit picks include <b>none of the three biggest hits</b>. It predicts <i>which format</i> well, but <i>how big</i> badly. So payoff is demoted to a reference band and never drives the classification.</p>
       <h3>Why no single score, and no dollars</h3>
@@ -338,14 +381,14 @@
     </div>
     <div>
       <div class="vbox">
-        <div class="vrow"><div class="vb ok">18/20</div><div class="vt"><b>Format routing is real.</b> Synopsis-only, no label — still matches the actual adaptation format.</div></div>
+        <div class="vrow"><div class="vb ok">13/14</div><div class="vt"><b>Format routing is real.</b> Synopsis-only, no label — still recovers the actual adaptation format.</div></div>
         <div class="vrow"><div class="vb warn">ρ 0.62</div><div class="vt"><b>Size is not.</b> Fit can't pick the megahit → payoff demoted to reference, not an axis.</div></div>
         <div class="vrow"><div class="vb go">Live</div><div class="vt"><b>Track record.</b> Un-adapted calls are dated, so the classification can be checked publicly over time.</div></div>
       </div>
       <h3 style="margin-top:30px">What's next</h3>
       <ul class="limits">
         <li><b>Source strength is curated</b> from public research today — a reproducible readership pipeline would replace hand-set tiers.</li>
-        <li><b>Wider, automated pool</b> — scaling past 24 hand-picked titles needs an automated crawl of platform rankings.</li>
+        <li><b>Wider, automated pool</b> — scaling past the current hand-picked field needs an automated crawl of platform rankings.</li>
         <li><b>Multi-source</b> — extend the source signal consistently across novels, games and original IP.</li>
       </ul>
     </div>
